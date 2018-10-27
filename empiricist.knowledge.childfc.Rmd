@@ -1,0 +1,97 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+#rm(list = ls(all = TRUE))
+#load needed libraries
+library(FactoMineR)
+library(psych)
+library(gdata)
+library(data.table)
+library(tidyr)
+library(reshape2)
+library(ggfortify)
+library(qdapTools)
+library(lm.beta)
+
+##### change current group to select dataset
+currentgroup = c("child.fc")
+read <- c("how.read")
+sensory <- c("how.see","how.hear")
+core <- c("how.help","how.number","how.objperm","how.gravity","how.face")
+types <- c("read","sensory","core")
+
+## prep; load data files & set parameters
+masterdata  = read.table(file = "/Users/jennywang/Google Drive/Museum/mathitude/data/alternative analyses/mathitudemaster.csv", sep=",",header=TRUE, na.strings="")
+masterdata_t = masterdata
+masterdata_t[,24:37]=(as.numeric(masterdata[,24:37]=="T"|masterdata[,24:37]=="O"))
+child.mc = read.table(file = "/Users/jennywang/Google Drive/Museum/mathitude/data/alternative analyses/childfcdata.csv", sep=",",header=TRUE, na.strings="")
+
+empirical = c(5,1,1,1,1,1,1,1,1,1)
+cols<- c(a.born="royalblue1",b.mature="skyblue2",c.teach="darkorange1",d.observe="orange")
+
+### current analysis target and dataloading
+data = subset(masterdata,masterdata$Group %in% currentgroup)
+data_t = subset(masterdata_t,masterdata_t$Group %in% currentgroup)
+
+####################################
+## calculate group stats for sensory, core knowledge, and read
+how.summ = data_t[,1:5]
+output = data.frame(files=NULL)
+summ.output = data.frame(files=NULL)
+dat_w = data_t[,c(10:15,18:19)]
+dat_h = data_t[,c(24:29,32:33)]
+
+for(i in c(1:nrow(data_t))){
+  how.sub = how.summ[i,]
+  sum.sub = as.data.frame(lapply(how.sub, rep, 3))
+  how.sub = as.data.frame(lapply(how.sub, rep, 10))
+  for (k in c(1:8)){
+      how.sub$Item[k] <- allhows[k]
+      how.sub$How[k] <- dat_h[i,k]
+      how.sub$When[k] <- dat_w[i,k]
+  }
+  for(j in c(1:3)){
+    sum.sub$Type[j]<-types[j]
+    sum.sub$How[j] <- mean(how.sub$How[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
+    sum.sub$When[j] <- mean(how.sub$When[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
+  }
+  output = rbind(output,how.sub)
+  summ.output = rbind(summ.output,sum.sub)
+}
+
+summ.output$Type = as.factor(as.character(summ.output$Type))
+summ.output$Gender = as.factor(as.character(summ.output$Gender))
+
+summ.output.how=describeBy(summ.output$How,list(summ.output$Type),na.rm=TRUE,mat=TRUE)
+summ.output.how$confIV1 = summ.output.how$mean-1.96*summ.output.how$se
+summ.output.how$confIV2 = summ.output.how$mean+1.96*summ.output.how$se
+summ.output.how
+```
+
+```{r}
+summ.output.when=describeBy(summ.output$When,list(summ.output$Type),na.rm=TRUE,mat=TRUE)
+summ.output.when$confIV1 = summ.output.when$mean-1.96*summ.output.when$se
+summ.output.when$confIV2 = summ.output.when$mean+1.96*summ.output.when$se
+summ.output.when
+```
+```{r}
+fit.lm <- lm(When~Gender+RawAge,data=output.core)
+lm.beta(fit.lm)
+summary(fit.lm)
+
+
+```
+
+```{r}
+fit.lm <- lm(How~Gender+RawAge,data=output.core)
+lm.beta(fit.lm)
+summary(fit.lm)
+```
+
