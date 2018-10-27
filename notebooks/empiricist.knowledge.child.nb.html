@@ -178,6 +178,153 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI3JtKGxpc3QgPSBscyhhbGwgPSBUUlVFKSlcbiNsb2FkIG5lZWRlZCBsaWJyYXJpZXNcbmxpYnJhcnkoRmFjdG9NaW5lUilcbmxpYnJhcnkocHN5Y2gpXG5saWJyYXJ5KGdkYXRhKVxuYGBgIn0= -->
+<pre class="r"><code>#rm(list = ls(all = TRUE))
+#load needed libraries
+library(FactoMineR)
+library(psych)
+library(gdata)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiZ2RhdGE6IHJlYWQueGxzIHN1cHBvcnQgZm9yICdYTFMnIChFeGNlbCA5Ny0yMDA0KSBmaWxlcyBFTkFCTEVELlxuXG5nZGF0YTogcmVhZC54bHMgc3VwcG9ydCBmb3IgJ1hMU1gnIChFeGNlbCAyMDA3KykgZmlsZXMgRU5BQkxFRC5cblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGdkYXRh4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6c3RhdHPigJk6XG5cbiAgICBub2JzXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6dXRpbHPigJk6XG5cbiAgICBvYmplY3Quc2l6ZVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmJhc2XigJk6XG5cbiAgICBzdGFydHNXaXRoXG4ifQ== -->
+<pre><code>gdata: read.xls support for 'XLS' (Excel 97-2004) files ENABLED.
+
+gdata: read.xls support for 'XLSX' (Excel 2007+) files ENABLED.
+
+Attaching package: ‘gdata’
+
+The following object is masked from ‘package:stats’:
+
+    nobs
+
+The following object is masked from ‘package:utils’:
+
+    object.size
+
+The following object is masked from ‘package:base’:
+
+    startsWith</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkYXRhLnRhYmxlKVxuYGBgIn0= -->
+<pre class="r"><code>library(data.table)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiZGF0YS50YWJsZSAxLjExLjYgIExhdGVzdCBuZXdzOiByLWRhdGF0YWJsZS5jb21cblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGRhdGEudGFibGXigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmdkYXRh4oCZOlxuXG4gICAgZmlyc3QsIGxhc3RcbiJ9 -->
+<pre><code>data.table 1.11.6  Latest news: r-datatable.com
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:gdata’:
+
+    first, last</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5cilcbmxpYnJhcnkocmVzaGFwZTIpXG5gYGAifQ== -->
+<pre class="r"><code>library(tidyr)
+library(reshape2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYcmVzaGFwZTLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTp0aWR5cuKAmTpcblxuICAgIHNtaXRoc1xuXG5UaGUgZm9sbG93aW5nIG9iamVjdHMgYXJlIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6ZGF0YS50YWJsZeKAmTpcblxuICAgIGRjYXN0LCBtZWx0XG4ifQ== -->
+<pre><code>
+Attaching package: ‘reshape2’
+
+The following object is masked from ‘package:tidyr’:
+
+    smiths
+
+The following objects are masked from ‘package:data.table’:
+
+    dcast, melt</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShnZ2ZvcnRpZnkpXG5gYGAifQ== -->
+<pre class="r"><code>library(ggfortify)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZ3Bsb3QyXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhnZ3Bsb3Qy4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTpwc3ljaOKAmTpcblxuICAgICUrJSwgYWxwaGFcbiJ9 -->
+<pre><code>Loading required package: ggplot2
+
+Attaching package: ‘ggplot2’
+
+The following objects are masked from ‘package:psych’:
+
+    %+%, alpha</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShxZGFwVG9vbHMpXG5gYGAifQ== -->
+<pre class="r"><code>library(qdapTools)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYcWRhcFRvb2xz4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6ZGF0YS50YWJsZeKAmTpcblxuICAgIHNoaWZ0XG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6cHN5Y2jigJk6XG5cbiAgICBsb29rdXBcbiJ9 -->
+<pre><code>
+Attaching package: ‘qdapTools’
+
+The following object is masked from ‘package:data.table’:
+
+    shift
+
+The following object is masked from ‘package:psych’:
+
+    lookup</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShsbS5iZXRhKVxuIyMjIyMgY2hhbmdlIGN1cnJlbnQgZ3JvdXAgdG8gc2VsZWN0IGRhdGFzZXRcbiMjIyMjIG5vdGU6c2VwYXJhdGUgc2NyaXB0cyBmb3IgRXhwZXJpbWVudHMgMyBhbmQgNGJcbmN1cnJlbnRncm91cCA9IGMoXCJjaGlsZFwiKVxuY3VycmVudGNvbmRpdGlvbiA9IGMoXCIxXCIsXCIyXCIpXG4jIyBwcmVwOyBsb2FkIGRhdGEgZmlsZXMgJiBzZXQgcGFyYW1ldGVyc1xubWFzdGVyZGF0YSAgPSByZWFkLnRhYmxlKGZpbGUgPSBcIi9Vc2Vycy9qZW5ueXdhbmcvR29vZ2xlIERyaXZlL011c2V1bS9tYXRoaXR1ZGUvZGF0YS9hbHRlcm5hdGl2ZSBhbmFseXNlcy9tYXRoaXR1ZGVtYXN0ZXIuY3N2XCIsIHNlcD1cIixcIixoZWFkZXI9VFJVRSwgbmEuc3RyaW5ncz1cIlwiKVxuZGF0YSA9IHN1YnNldChtYXN0ZXJkYXRhLG1hc3RlcmRhdGEkR3JvdXAgJWluJSBjdXJyZW50Z3JvdXApXG5kYXRhID0gc3Vic2V0KGRhdGEsZGF0YSRDb25kaXRpb24gJWluJSBjdXJyZW50Y29uZGl0aW9uKVxuZGF0YV90ID0gZGF0YVxuZGF0YV90WywyNDozN109KGFzLm51bWVyaWMoZGF0YVssMjQ6MzddPT1cIlRcInxkYXRhWywyNDozN109PVwiT1wiKSlcbmNvbHM8LSBjKGEuYm9ybj1cInJveWFsYmx1ZTFcIixiLm1hdHVyZT1cInNreWJsdWUyXCIsYy50ZWFjaD1cImRhcmtvcmFuZ2UxXCIsZC5vYnNlcnZlPVwib3JhbmdlXCIpXG5yZWFkIDwtIGMoXCJob3cucmVhZFwiKVxuc2Vuc29yeSA8LSBjKFwiaG93LnNlZVwiLFwiaG93LmhlYXJcIilcbmNvcmUgPC0gYyhcImhvdy5jb2xvclwiLFwiaG93LmRlcHRoXCIsXCJob3cuZmFjZVwiLFwiaG93LmdyYXZpdHlcIixcImhvdy5vYmpwZXJtXCIsXCJob3cubnVtYmVyXCIsXCJob3cuaGVscFwiKVxudHlwZXMgPC0gYyhcInJlYWRcIixcInNlbnNvcnlcIixcImNvcmVcIilcbmFsbGl0ZW1zIDwtYyhcInJlYWRcIixcImhlbHBcIixcIm51bWJlclwiLFwib2JqcGVybVwiLFwiZ3Jhdml0eVwiLFwiZmFjZVwiLFwiZGVwdGhcIixcImNvbG9yXCIsXCJoZWFyXCIsXCJzZWVcIilcbmFsbGhvd3MgPC1jKFwiaG93LnJlYWRcIixcImhvdy5oZWxwXCIsXCJob3cubnVtYmVyXCIsXCJob3cub2JqcGVybVwiLFwiaG93LmdyYXZpdHlcIixcImhvdy5mYWNlXCIsXCJob3cuZGVwdGhcIixcImhvdy5jb2xvclwiLFwiaG93LmhlYXJcIixcImhvdy5zZWVcIilcbmFsbHdoZW48LWMoXCJ3aGVuLnJlYWRcIixcIndoZW4uaGVscFwiLFwid2hlbi5udW1iZXJcIixcIndoZW4ub2JqcGVybVwiLFwid2hlbi5ncmF2aXR5XCIsXCJ3aGVuLmZhY2VcIixcIndoZW4uZGVwdGhcIixcIndoZW4uY29sb3JcIixcIndoZW4uaGVhclwiLFwid2hlbi5zZWVcIilcbmVtcGlyaWNhbCA9IGMoNiwgMC41LCAwLjAwNTUsMC4yOSwgMC4yNSwgMC4wMDE5LCAwLjAwNTQsIDAuMzMsIDAuMDAyNywgMC4wNTIpXG4jIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyNcbiMjIyBvdmVyYWxsIGRlc2NyaXB0aXZlcyBiYXNlZCBvbiB0aW1lbGluZSBjaG9pY2VzIGFuZCBwcm9wb3J0aW9uIHJlc3BvbnNlcyBmb3IgcGxvdHRpbmdcbmRlc19tID0gZGVzY3JpYmVCeShkYXRhLGdyb3VwPU5VTEwsbmEucm09VFJVRSlcbmBgYCJ9 -->
+<pre class="r"><code>library(lm.beta)
+##### change current group to select dataset
+##### note:separate scripts for Experiments 3 and 4b
+currentgroup = c(&quot;child&quot;)
+currentcondition = c(&quot;1&quot;,&quot;2&quot;)
+## prep; load data files &amp; set parameters
+masterdata  = read.table(file = &quot;/Users/jennywang/Google Drive/Museum/mathitude/data/alternative analyses/mathitudemaster.csv&quot;, sep=&quot;,&quot;,header=TRUE, na.strings=&quot;&quot;)
+data = subset(masterdata,masterdata$Group %in% currentgroup)
+data = subset(data,data$Condition %in% currentcondition)
+data_t = data
+data_t[,24:37]=(as.numeric(data[,24:37]==&quot;T&quot;|data[,24:37]==&quot;O&quot;))
+cols&lt;- c(a.born=&quot;royalblue1&quot;,b.mature=&quot;skyblue2&quot;,c.teach=&quot;darkorange1&quot;,d.observe=&quot;orange&quot;)
+read &lt;- c(&quot;how.read&quot;)
+sensory &lt;- c(&quot;how.see&quot;,&quot;how.hear&quot;)
+core &lt;- c(&quot;how.color&quot;,&quot;how.depth&quot;,&quot;how.face&quot;,&quot;how.gravity&quot;,&quot;how.objperm&quot;,&quot;how.number&quot;,&quot;how.help&quot;)
+types &lt;- c(&quot;read&quot;,&quot;sensory&quot;,&quot;core&quot;)
+allitems &lt;-c(&quot;read&quot;,&quot;help&quot;,&quot;number&quot;,&quot;objperm&quot;,&quot;gravity&quot;,&quot;face&quot;,&quot;depth&quot;,&quot;color&quot;,&quot;hear&quot;,&quot;see&quot;)
+allhows &lt;-c(&quot;how.read&quot;,&quot;how.help&quot;,&quot;how.number&quot;,&quot;how.objperm&quot;,&quot;how.gravity&quot;,&quot;how.face&quot;,&quot;how.depth&quot;,&quot;how.color&quot;,&quot;how.hear&quot;,&quot;how.see&quot;)
+allwhen&lt;-c(&quot;when.read&quot;,&quot;when.help&quot;,&quot;when.number&quot;,&quot;when.objperm&quot;,&quot;when.gravity&quot;,&quot;when.face&quot;,&quot;when.depth&quot;,&quot;when.color&quot;,&quot;when.hear&quot;,&quot;when.see&quot;)
+empirical = c(6, 0.5, 0.0055,0.29, 0.25, 0.0019, 0.0054, 0.33, 0.0027, 0.052)
+####################################
+### overall descriptives based on timeline choices and proportion responses for plotting
+des_m = describeBy(data,group=NULL,na.rm=TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoibm8gbm9uLW1pc3NpbmcgYXJndW1lbnRzIHRvIG1pbjsgcmV0dXJuaW5nIEluZm5vIG5vbi1taXNzaW5nIGFyZ3VtZW50cyB0byBtaW47IHJldHVybmluZyBJbmZubyBub24tbWlzc2luZyBhcmd1bWVudHMgdG8gbWluOyByZXR1cm5pbmcgSW5mbm8gbm9uLW1pc3NpbmcgYXJndW1lbnRzIHRvIG1pbjsgcmV0dXJuaW5nIEluZm5vIG5vbi1taXNzaW5nIGFyZ3VtZW50cyB0byBtaW47IHJldHVybmluZyBJbmZubyBub24tbWlzc2luZyBhcmd1bWVudHMgdG8gbWluOyByZXR1cm5pbmcgSW5mbm8gbm9uLW1pc3NpbmcgYXJndW1lbnRzIHRvIG1pbjsgcmV0dXJuaW5nIEluZm5vIG5vbi1taXNzaW5nIGFyZ3VtZW50cyB0byBtaW47IHJldHVybmluZyBJbmZubyBub24tbWlzc2luZyBhcmd1bWVudHMgdG8gbWluOyByZXR1cm5pbmcgSW5mbm8gbm9uLW1pc3NpbmcgYXJndW1lbnRzIHRvIG1pbjsgcmV0dXJuaW5nIEluZm5vIG5vbi1taXNzaW5nIGFyZ3VtZW50cyB0byBtaW47IHJldHVybmluZyBJbmZubyBub24tbWlzc2luZyBhcmd1bWVudHMgdG8gbWluOyByZXR1cm5pbmcgSW5mbm8gbm9uLW1pc3NpbmcgYXJndW1lbnRzIHRvIG1pbjsgcmV0dXJuaW5nIEluZm5vIG5vbi1taXNzaW5nIGFyZ3VtZW50cyB0byBtaW47IHJldHVybmluZyBJbmZubyBub24tbWlzc2luZyBhcmd1bWVudHMgdG8gbWF4OyByZXR1cm5pbmcgLUluZm5vIG5vbi1taXNzaW5nIGFyZ3VtZW50cyB0byBtYXg7IHJldHVybmluZyAtSW5mbm8gbm9uLW1pc3NpbmcgYXJndW1lbnRzIHRvIG1heDsgcmV0dXJuaW5nIC1JbmZubyBub24tbWlzc2luZyBhcmd1bWVudHMgdG8gbWF4OyByZXR1cm5pbmcgLUluZm5vIG5vbi1taXNzaW5nIGFyZ3VtZW50cyB0byBtYXg7IHJldHVybmluZyAtSW5mbm8gbm9uLW1pc3NpbmcgYXJndW1lbnRzIHRvIG1heDsgcmV0dXJuaW5nIC1JbmZubyBub24tbWlzc2luZyBhcmd1bWVudHMgdG8gbWF4OyByZXR1cm5pbmcgLUluZm5vIG5vbi1taXNzaW5nIGFyZ3VtZW50cyB0byBtYXg7IHJldHVybmluZyAtSW5mbm8gbm9uLW1pc3NpbmcgYXJndW1lbnRzIHRvIG1heDsgcmV0dXJuaW5nIC1JbmZubyBub24tbWlzc2luZyBhcmd1bWVudHMgdG8gbWF4OyByZXR1cm5pbmcgLUluZm5vIG5vbi1taXNzaW5nIGFyZ3VtZW50cyB0byBtYXg7IHJldHVybmluZyAtSW5mbm8gbm9uLW1pc3NpbmcgYXJndW1lbnRzIHRvIG1heDsgcmV0dXJuaW5nIC1JbmZubyBub24tbWlzc2luZyBhcmd1bWVudHMgdG8gbWF4OyByZXR1cm5pbmcgLUluZm5vIG5vbi1taXNzaW5nIGFyZ3VtZW50cyB0byBtYXg7IHJldHVybmluZyAtSW5mbm8gZ3JvdXBpbmcgdmFyaWFibGUgcmVxdWVzdGVkXG4ifQ== -->
+<pre><code>no non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to min; returning Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno non-missing arguments to max; returning -Infno grouping variable requested</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0X20gPSBkYXRhWywyNDozM11cbnRhYmxlX209IG10YWJ1bGF0ZShkYXRfbSlcbnRpbWVfbSA9IGRlc19tWzEwOjE5LF1cbnJvd25hbWVzKHRpbWVfbSkgPC0gYyhcInJlYWRcIixcImhlbHBcIixcIm51bWJlclwiLFwib2JqcGVybVwiLFwiZ3Jhdml0eVwiLFwiZmFjZVwiLFwiZGVwdGhcIixcImNvbG9yXCIsXCJoZWFyXCIsXCJzZWVcIilcbmhvd19tID0gdGFibGVfbS9yb3dTdW1zKHRhYmxlX20sbmEucm09RkFMU0UpXG5jb2xuYW1lcyhob3dfbSkgPC0gYyhcImIubWF0dXJlXCIsXCJhLmJvcm5cIixcImQub2JzZXJ2ZVwiLFwiYy50ZWFjaFwiKVxuc3VtbV9tID0gY2JpbmQodGltZV9tLGhvd19tKVxuc3VtbV9tJENhdGVnb3J5Lm51bSA9IGMoMTAsOSw4LDcsNiw1LDQsMywyLDEpXG5zdW1tX20kbGVhcm5pbmc9c3VtbV9tJGQub2JzZXJ2ZStzdW1tX20kYy50ZWFjaFxuIyNhZ2UgZXN0aW1hdGVzIGJhc2VkIG9uIGFjdHVhbCBmaW5kaW5nc1xuc3VtbV9tJGVtcC5hZ2UgPSBlbXBpcmljYWxcbiMjY29udmVydGluZyB0aW1lbGluZSBjaG9pY2UgbWVhbi9zZSB0byBhZ2UgZXN0aW1hdGVcbnN1bW1fbSRtZWFuLmVzdGltYXRlID0gMC4xMypleHAoMC43OCpzdW1tX20kbWVhbilcbnN1bW1fbSRzZS5lc3RpbWF0ZSA9IDAuMTMqZXhwKDAuNzgqc3VtbV9tJHNlKVxuc3VtbV9tJGNvbmZJVjEuZXN0aW1hdGUgPSBzdW1tX20kbWVhbi5lc3RpbWF0ZS0xLjk2KnN1bW1fbSRzZS5lc3RpbWF0ZVxuc3VtbV9tJGNvbmZJVjIuZXN0aW1hdGUgPSBzdW1tX20kbWVhbi5lc3RpbWF0ZSsxLjk2KnN1bW1fbSRzZS5lc3RpbWF0ZVxuc3VtbV9tJG92ZXJyYXRpbz1zdW1tX20kbWVhbi5lc3RpbWF0ZS9zdW1tX20kZW1wLmFnZVxuIyNhdmVyYWdlcyBiYXNlZCBvbiB0aW1lbGluZSBjaG9pY2VzXG5zdW1tX2NvcmU9Y29sTWVhbnMoc3VtbV9tWzI6OCxdKSBcbnN1bW1fc2Vuc2U9Y29sTWVhbnMoc3VtbV9tWzk6MTAsXSkgXG5zdW1tXzMgPSByYmluZChzdW1tX21bMSxdLHN1bW1fY29yZSxzdW1tX3NlbnNlKVxuc3VtbV8zJENhdGVnb3J5Lm51bT1jKDMsMiwxKVxuc3VtbV8zJGFnZS5yYXRpbz1zdW1tXzMkbWVhbi5lc3RpbWF0ZS9zdW1tXzMkZW1wLmFnZVxucm93bmFtZXMoc3VtbV8zKTwtYyhcInJlYWRcIixcImNvcmVcIixcInNlbnNvcnlcIilcbnN1bW1fbVssLWMoMToxOCldXG5gYGAifQ== -->
+<pre class="r"><code>dat_m = data[,24:33]
+table_m= mtabulate(dat_m)
+time_m = des_m[10:19,]
+rownames(time_m) &lt;- c(&quot;read&quot;,&quot;help&quot;,&quot;number&quot;,&quot;objperm&quot;,&quot;gravity&quot;,&quot;face&quot;,&quot;depth&quot;,&quot;color&quot;,&quot;hear&quot;,&quot;see&quot;)
+how_m = table_m/rowSums(table_m,na.rm=FALSE)
+colnames(how_m) &lt;- c(&quot;b.mature&quot;,&quot;a.born&quot;,&quot;d.observe&quot;,&quot;c.teach&quot;)
+summ_m = cbind(time_m,how_m)
+summ_m$Category.num = c(10,9,8,7,6,5,4,3,2,1)
+summ_m$learning=summ_m$d.observe+summ_m$c.teach
+##age estimates based on actual findings
+summ_m$emp.age = empirical
+##converting timeline choice mean/se to age estimate
+summ_m$mean.estimate = 0.13*exp(0.78*summ_m$mean)
+summ_m$se.estimate = 0.13*exp(0.78*summ_m$se)
+summ_m$confIV1.estimate = summ_m$mean.estimate-1.96*summ_m$se.estimate
+summ_m$confIV2.estimate = summ_m$mean.estimate+1.96*summ_m$se.estimate
+summ_m$overratio=summ_m$mean.estimate/summ_m$emp.age
+##averages based on timeline choices
+summ_core=colMeans(summ_m[2:8,]) 
+summ_sense=colMeans(summ_m[9:10,]) 
+summ_3 = rbind(summ_m[1,],summ_core,summ_sense)
+summ_3$Category.num=c(3,2,1)
+summ_3$age.ratio=summ_3$mean.estimate/summ_3$emp.age
+rownames(summ_3)&lt;-c(&quot;read&quot;,&quot;core&quot;,&quot;sensory&quot;)
+summ_m[,-c(1:18)]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6MTB9LCJyZGYiOiJINHNJQUFBQUFBQUFBd3R5aVREaWl1QmlZR0JnWW1CbVpXUmdZZ1l5V1ppQUJDTURDd01uaUs1Z1lHQVdCakxZZ1pnUGlMbnNQekNBZ2YzN21TQXd5LzdkOWVmQmJoK20yTDgzM1ZVaDZiSEIvdDN0M0cyM2M3ZmJ2MUZsRnAydStNNytIVS9OZytQbmVPeGZIdXlmSS9Iem9QMkZiL3V0WnBtMzJKK1dCZ0VabUxrT0VsQnpIMERwc25adEpoN1BYZmFYK21NMHZoN3F0NzhBRlk5WDFDMDM3RDlxWHliblh4Wi9ZNTM5VmJrZGdhOWI1ZTNUb1B4VjgvZVZuZGhpQ1RkWGlGZWhrT2VQa0FPRGhIOS9ZdHR1K3ovZjZnMlBDL0RiLzkrM1dIcldVVC83SDhwSmNkWThGdlpmd25lVzkyMHZzUC9qRi9xcjJ2bVQvZGZwWjFsMG5GUHRIMXkrdm5PVjlDZjcyKytmZTVSKzJBa1BoNFBQSmM5K05CTzFQOFJTeGZyMFY1cjlJWjFmMzdwdFQ5b2ZpbWRVT3ZqSDBQNlE2MlNEOEdBRCswTUI1cHRhVFBqc0QxV2MvYjlsbGFUOW9SVGwwRE9UUE8wUC9tb3pPM0xtaS8zQkkrdmlEditzZzd0WDRFdG05dWtmQmZhL2owMll1cGhkM2Y1SFU0dkw3citpOXIvdDBsWm5yRGUyLzd3eTRlNExzMzc3OTlzczNzaWJMYlAvZnZ4NHBCdlhTL3VQWW40elU1TGs3Qzl3bW1ucWZOR3dQOHFURXNRL3h3TnVyckRxOVRMZi8xc2NtSHpETG4vc2ZPVEFzTldXUDFPdzFZRkpQdi9vczl5dDluL21KdC9yZmZqUS9zZVZzRXJleTcwT0RGbEZ2amZzYXUxL1NYcm5mVkZaWS85eXNVamMzcjBYN0ordE9XZjhpWE01UEJ4ZUNEWk0yLzNyc0lNQUpId2RTaWIrQ25NMld1Y2dIYnRqZjJ1T3I0TUVKSHdkV2w2R251L1FjM0FvcWJ6Rnc4Ulg3U0FRdlN1aWJ2NUtoNHlJVE05bDBpa09DcWRZcnMydk0wRkxnS3g1aWJtcHhVQ0dBRGdSUWdRNWNsSVRpL0l5ODlLaGZQYlUzQUs5eFBSVUtKYzNOelV4VHkrMXVDUXpON0VFSnNoZG5Jb3VKSkNjbjVmbUdXYUlROXdJWFp3enZ5eTFxQ2l4SkRNZnpaR2NSZm5sZXNnTzVZSktzQlNsSnFiQTJCbXBPUVZRTmx0ZWFXNVNhaEhNK2ZsSldRV3BSYmt3Ym5wUllsbG1TU1ZNWDFwaU1zd0ZyQ21wQlNVWk1FNXlmazUrRWNMMFJCaWJ1VGcxRlQwWWszTVNpMkd1Z3dseXBTU1dKT3FsRlFFZER1VDlROVBDbmw4QTlHa2VVQk1UcUFCZ1JkUE1XSVFtd0YrYUJ3cUNGTjNrak5LOGJGMURjRENBcENHWUYwcHpJYkhaSVZZeS9ZY2F4UW9MbnRTODlNdzh1S2R6RXBOU2M2QWNQbUJRZzBOYXI2QW9NNjhFNWhPZ2FMRmVTWDVKSWt3ZEZ6QndZQ0pndnpIOEF3QnFtSUhFN2dRQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["learning"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["emp.age"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["mean.estimate"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["se.estimate"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["confIV1.estimate"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["confIV2.estimate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["overratio"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"1.0000000","2":"6.0000","3":"4.5128191","4":"0.1398651","5":"4.2386834","6":"4.7869547","7":"0.7521365","_rn_":"read"},{"1":"0.9875000","2":"0.5000","3":"2.0118705","4":"0.1407616","5":"1.7359777","6":"2.2877633","7":"4.0237410","_rn_":"help"},{"1":"0.9638554","2":"0.0055","3":"1.8101799","4":"0.1419977","5":"1.5318644","6":"2.0884954","7":"329.1236174","_rn_":"number"},{"1":"0.9753086","2":"0.2900","3":"1.9840423","4":"0.1435243","5":"1.7027346","6":"2.2653499","7":"6.8415251","_rn_":"objperm"},{"1":"0.9642857","2":"0.2500","3":"1.5086387","4":"0.1427483","5":"1.2288521","6":"1.7884253","7":"6.0345549","_rn_":"gravity"},{"1":"0.8795181","2":"0.0019","3":"1.2714171","4":"0.1430730","5":"0.9909939","6":"1.5518403","7":"669.1668997","_rn_":"face"},{"1":"0.9390244","2":"0.0054","3":"1.7691250","4":"0.1443117","5":"1.4862741","6":"2.0519758","7":"327.6157341","_rn_":"depth"},{"1":"0.8048780","2":"0.3300","3":"1.3495608","4":"0.1436810","5":"1.0679461","6":"1.6311755","7":"4.0895780","_rn_":"color"},{"1":"0.2650602","2":"0.0027","3":"0.5258597","4":"0.1404579","5":"0.2505622","6":"0.8011572","7":"194.7628525","_rn_":"hear"},{"1":"0.2117647","2":"0.0520","3":"0.4365175","4":"0.1388147","5":"0.1644407","6":"0.7085944","7":"8.3945682","_rn_":"see"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyAjIyBQQ0EgIyMjIyMjIyMjICMjIyMjIyMjIyMjIGNsdXN0ZXIgYW5hbHlzaXMgIyMjIyMjIyMjIyNcbnBjYWRhdGE9ZGF0YV90WywyNDozM10gI210dXJrIGhvd1xucGNhZGF0YT1uYS5vbWl0KHBjYWRhdGEpXG5wY2FkYXRhPXQocGNhZGF0YSlcbmF1dG9wbG90KHByY29tcChwY2FkYXRhKSwgbGFiZWw9VFJVRSlcbmBgYCJ9 -->
 <pre class="r"><code># ## PCA ######### ########### cluster analysis ###########
 pcadata=data_t[,24:33] #mturk how
@@ -192,19 +339,7 @@ autoplot(prcomp(pcadata), label=TRUE)</code></pre>
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyAjIyBQQ0EgIyMjIyMjIyMjICMjIyMjIyMjIyMjIGNsdXN0ZXIgYW5hbHlzaXMgIyMjIyMjIyMjIyNcbnBjYWRhdGE9ZGF0YV90WywyNDozM10gI210dXJrIGhvd1xucGNhZGF0YT1uYS5vbWl0KHBjYWRhdGEpXG5wY2FkYXRhPXQocGNhZGF0YSlcbmF1dG9wbG90KHByY29tcChwY2FkYXRhKSwgbGFiZWw9VFJVRSlcblxuYGBgIn0= -->
-<pre class="r"><code># ## PCA ######### ########### cluster analysis ###########
-pcadata=data_t[,24:33] #mturk how
-pcadata=na.omit(pcadata)
-pcadata=t(pcadata)
-autoplot(prcomp(pcadata), label=TRUE)
-</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXYuZW1wID0gbWVhbihjKDAuNSwgMC4wMDU1LDAuMjksIDAuMjUsIDAuMDAxOSwgMC4wMDU0LCAwLjMzKSlcbmhvdy5zdW1tID0gZGF0YV90WyxjKDE6OSwzOCwzOSw0MCw0MSldXG5vdXRwdXQgPSBkYXRhLmZyYW1lKGZpbGVzPU5VTEwpXG5zdW1tLm91dHB1dCA9IGRhdGEuZnJhbWUoZmlsZXM9TlVMTClcbmZvcihpIGluIGMoMTpucm93KGRhdGFfdCkpKXtcbiAgaG93LnN1YiA9IGhvdy5zdW1tW2ksXVxuICBzdW0uc3ViID0gYXMuZGF0YS5mcmFtZShsYXBwbHkoaG93LnN1YiwgcmVwLCAzKSlcbiAgaG93LnN1YiA9IGFzLmRhdGEuZnJhbWUobGFwcGx5KGhvdy5zdWIsIHJlcCwgMTApKVxuICBmb3IgKGsgaW4gYygxOjEwKSl7XG4gICAgaG93LnN1YiRJdGVtW2tdIDwtIGFsbGhvd3Nba11cbiAgICBob3cuc3ViJEhvd1trXSA8LSBkYXRhX3RbW3Bhc3RlKFwiaG93LlwiLGFsbGl0ZW1zW2tdLHNlcD1cIlwiKV1dW2ldXG4gICAgaG93LnN1YiRXaGVuW2tdIDwtIGRhdGFfdFtbcGFzdGUoXCJ3aGVuLlwiLGFsbGl0ZW1zW2tdLHNlcD1cIlwiKV1dW2ldXG4gICAgaG93LnN1YiRXaGVuLmVzdGltYXRlW2tdPC0wLjEzKmV4cCgwLjc4Kmhvdy5zdWIkV2hlbltrXSlcbiAgICB9XG4gIGZvcihqIGluIGMoMTozKSl7XG4gICAgc3VtLnN1YiRUeXBlW2pdPC10eXBlc1tqXVxuICAgIHN1bS5zdWIkSG93W2pdIDwtIG1lYW4oaG93LnN1YiRIb3dbaG93LnN1YiRJdGVtICVpbiUgZXZhbChwYXJzZSh0ZXh0ID0gdHlwZXNbal0pKV0sbmEucm09VFJVRSlcbiAgICBzdW0uc3ViJFdoZW5bal0gPC0gbWVhbihob3cuc3ViJFdoZW5baG93LnN1YiRJdGVtICVpbiUgZXZhbChwYXJzZSh0ZXh0ID0gdHlwZXNbal0pKV0sbmEucm09VFJVRSlcbiAgICBzdW0uc3ViJFdoZW4uZXN0aW1hdGVbal08LW1lYW4oaG93LnN1YiRXaGVuLmVzdGltYXRlW2hvdy5zdWIkSXRlbSAlaW4lIGV2YWwocGFyc2UodGV4dCA9IHR5cGVzW2pdKSldLG5hLnJtPVRSVUUpXG4gIH1cbiAgb3V0cHV0ID0gcmJpbmQob3V0cHV0LGhvdy5zdWIpXG4gIHN1bW0ub3V0cHV0ID0gcmJpbmQoc3VtbS5vdXRwdXQsc3VtLnN1Yilcbn1cblxuZGVzY3IuaG93IDwtZGVzY3JpYmVCeShzdW1tLm91dHB1dCRIb3csbGlzdChzdW1tLm91dHB1dCRUeXBlKSxuYS5ybT1UUlVFLG1hdD1UUlVFKVxuZGVzY3IuaG93JGNvbmZJVjEgPSBkZXNjci5ob3ckbWVhbi0xLjk2KmRlc2NyLmhvdyRzZVxuZGVzY3IuaG93JGNvbmZJVjIgPSBkZXNjci5ob3ckbWVhbisxLjk2KmRlc2NyLmhvdyRzZVxuXG5kZXNjci5ob3dbLGMoMiw1LDE2LDE3KV1cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXYuZW1wID0gbWVhbihjKDAuNSwgMC4wMDU1LDAuMjksIDAuMjUsIDAuMDAxOSwgMC4wMDU0LCAwLjMzKSlcbmhvdy5zdW1tID0gZGF0YV90WyxjKDE6OSwzOCwzOSw0MCw0MSldXG5vdXRwdXQgPSBkYXRhLmZyYW1lKGZpbGVzPU5VTEwpXG5zdW1tLm91dHB1dCA9IGRhdGEuZnJhbWUoZmlsZXM9TlVMTClcbmZvcihpIGluIGMoMTpucm93KGRhdGFfdCkpKXtcbiAgaG93LnN1YiA9IGhvdy5zdW1tW2ksXVxuICBzdW0uc3ViID0gYXMuZGF0YS5mcmFtZShsYXBwbHkoaG93LnN1YiwgcmVwLCAzKSlcbiAgaG93LnN1YiA9IGFzLmRhdGEuZnJhbWUobGFwcGx5KGhvdy5zdWIsIHJlcCwgMTApKVxuICBmb3IgKGsgaW4gYygxOjEwKSl7XG4gICAgaG93LnN1YiRJdGVtW2tdIDwtIGFsbGhvd3Nba11cbiAgICBob3cuc3ViJEhvd1trXSA8LSBkYXRhX3RbW3Bhc3RlKFwiaG93LlwiLGFsbGl0ZW1zW2tdLHNlcD1cIlwiKV1dW2ldXG4gICAgaG93LnN1YiRXaGVuW2tdIDwtIGRhdGFfdFtbcGFzdGUoXCJ3aGVuLlwiLGFsbGl0ZW1zW2tdLHNlcD1cIlwiKV1dW2ldXG4gICAgaG93LnN1YiRXaGVuLmVzdGltYXRlW2tdPC0wLjEzKmV4cCgwLjc4Kmhvdy5zdWIkV2hlbltrXSlcbiAgICB9XG4gIGZvcihqIGluIGMoMTozKSl7XG4gICAgc3VtLnN1YiRUeXBlW2pdPC10eXBlc1tqXVxuICAgIHN1bS5zdWIkSG93W2pdIDwtIG1lYW4oaG93LnN1YiRIb3dbaG93LnN1YiRJdGVtICVpbiUgZXZhbChwYXJzZSh0ZXh0ID0gdHlwZXNbal0pKV0sbmEucm09VFJVRSlcbiAgICBzdW0uc3ViJFdoZW5bal0gPC0gbWVhbihob3cuc3ViJFdoZW5baG93LnN1YiRJdGVtICVpbiUgZXZhbChwYXJzZSh0ZXh0ID0gdHlwZXNbal0pKV0sbmEucm09VFJVRSlcbiAgICBzdW0uc3ViJFdoZW4uZXN0aW1hdGVbal08LW1lYW4oaG93LnN1YiRXaGVuLmVzdGltYXRlW2hvdy5zdWIkSXRlbSAlaW4lIGV2YWwocGFyc2UodGV4dCA9IHR5cGVzW2pdKSldLG5hLnJtPVRSVUUpXG4gIH1cbiAgb3V0cHV0ID0gcmJpbmQob3V0cHV0LGhvdy5zdWIpXG4gIHN1bW0ub3V0cHV0ID0gcmJpbmQoc3VtbS5vdXRwdXQsc3VtLnN1Yilcbn1cbmRlc2NyLmhvdyA8LWRlc2NyaWJlQnkoc3VtbS5vdXRwdXQkSG93LGxpc3Qoc3VtbS5vdXRwdXQkVHlwZSksbmEucm09VFJVRSxtYXQ9VFJVRSlcbmRlc2NyLmhvdyRjb25mSVYxID0gZGVzY3IuaG93JG1lYW4tMS45NipkZXNjci5ob3ckc2VcbmRlc2NyLmhvdyRjb25mSVYyID0gZGVzY3IuaG93JG1lYW4rMS45NipkZXNjci5ob3ckc2VcbmRlc2NyLmhvd1ssYygyLDUsMTYsMTcpXVxuYGBgIn0= -->
 <pre class="r"><code>av.emp = mean(c(0.5, 0.0055,0.29, 0.25, 0.0019, 0.0054, 0.33))
 how.summ = data_t[,c(1:9,38,39,40,41)]
 output = data.frame(files=NULL)
@@ -228,16 +363,21 @@ for(i in c(1:nrow(data_t))){
   output = rbind(output,how.sub)
   summ.output = rbind(summ.output,sum.sub)
 }
-
 descr.how &lt;-describeBy(summ.output$How,list(summ.output$Type),na.rm=TRUE,mat=TRUE)
 descr.how$confIV1 = descr.how$mean-1.96*descr.how$se
 descr.how$confIV2 = descr.how$mean+1.96*descr.how$se
-
 descr.how[,c(2,5,16,17)]</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6M30sInJkZiI6Ikg0c0lBQUFBQUFBQUExMVJ1MDdETUJSMTRvU3FrVnBBN013TU5GS1NrYUVEU0lnSmlhSHFCSEpUcHhSY08zTFNBbC9BUi9BRi9aQ09QSVp1U0t3c2dHQmpLdGhKYnRyR2tuMlA3N0hQZlowZGRYMm42eUNFVElSdEE1bFlRY3RVaDRFc1ZOZjJGaUc4bzczS05wVEZHYWsvWkhqdDhRYWpFOG9TaGJZeU52ZGFvWkFVc0tTa1grQmFRbmtpNUYxRnhBNFpTVUNqVkk1SW1BcXAwRUx0cGxadmYwYXoxOGY5dy9ZM3lsYjc2VTJ2ZWNsL1hCeThUN2ZQUzM3V2VmbTl1bWNsLzhWUG4zK085MHArSGt4NjA0ZmRhanFjakNpa1kwRTZBeW5Hc1FkRmpTamhVRlFvZUhUUzhkYXZma1cwTHNXTnV5b012Y0pkejF0Q2Z3bURYQUgvVlJyajlFbEszRWdxcmJ3NWEzRnFJazZIZ3Fzb3BwNmhYZmxzeUlwamM4eDFWdjFXZURubTE2MUFCeWptclhlanNIZ0ZXM2xJQ3hLem9VV1VENFljNW00ejBxT3N1RFJWOVZueGJpeUhQSVZLbERkeFU1RVNlT2VFZ29FbkgvemlIODdpSEl1eEFnQUEifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["group1"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["confIV1"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["confIV2"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"core","2":"0.9187955","3":"0.8866252","4":"0.9509658","_rn_":"X11"},{"1":"read","2":"1.0000000","3":"1.0000000","4":"1.0000000","_rn_":"X12"},{"1":"sensory","2":"0.2411765","3":"0.1667119","4":"0.3156410","_rn_":"X13"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[3]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGVzY3Iud2hlbiA8LWRlc2NyaWJlQnkoc3VtbS5vdXRwdXQkV2hlbixsaXN0KHN1bW0ub3V0cHV0JFR5cGUpLG5hLnJtPVRSVUUsbWF0PVRSVUUpXG5kZXNjci53aGVuJGNvbmZJVjEgPSBkZXNjci53aGVuJG1lYW4tMS45NipkZXNjci53aGVuJHNlXG5kZXNjci53aGVuJGNvbmZJVjIgPSBkZXNjci53aGVuJG1lYW4rMS45NipkZXNjci53aGVuJHNlXG5kZXNjci53aGVuJG1lYW4uZXN0aW1hdGUgPSAwLjEzKmV4cCgwLjc4KmRlc2NyLndoZW4kbWVhbilcbmRlc2NyLndoZW4kc2UuZXN0aW1hdGUgPSAwLjEzKmV4cCgwLjc4KmRlc2NyLndoZW4kc2UpXG5kZXNjci53aGVuJGNvbmZJVjEuZXN0aW1hdGUgPSBkZXNjci53aGVuJG1lYW4uZXN0aW1hdGUtMS45NipkZXNjci53aGVuJHNlLmVzdGltYXRlXG5kZXNjci53aGVuJGNvbmZJVjIuZXN0aW1hdGUgPSBkZXNjci53aGVuJG1lYW4uZXN0aW1hdGUrMS45NipkZXNjci53aGVuJHNlLmVzdGltYXRlXG5cbmRlc2NyLndoZW5bLGMoMiwxODoyMSldXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGVzY3Iud2hlbiA8LWRlc2NyaWJlQnkoc3VtbS5vdXRwdXQkV2hlbixsaXN0KHN1bW0ub3V0cHV0JFR5cGUpLG5hLnJtPVRSVUUsbWF0PVRSVUUpXG5kZXNjci53aGVuJGNvbmZJVjEgPSBkZXNjci53aGVuJG1lYW4tMS45NipkZXNjci53aGVuJHNlXG5kZXNjci53aGVuJGNvbmZJVjIgPSBkZXNjci53aGVuJG1lYW4rMS45NipkZXNjci53aGVuJHNlXG5kZXNjci53aGVuJG1lYW4uZXN0aW1hdGUgPSAwLjEzKmV4cCgwLjc4KmRlc2NyLndoZW4kbWVhbilcbmRlc2NyLndoZW4kc2UuZXN0aW1hdGUgPSAwLjEzKmV4cCgwLjc4KmRlc2NyLndoZW4kc2UpXG5kZXNjci53aGVuJGNvbmZJVjEuZXN0aW1hdGUgPSBkZXNjci53aGVuJG1lYW4uZXN0aW1hdGUtMS45NipkZXNjci53aGVuJHNlLmVzdGltYXRlXG5kZXNjci53aGVuJGNvbmZJVjIuZXN0aW1hdGUgPSBkZXNjci53aGVuJG1lYW4uZXN0aW1hdGUrMS45NipkZXNjci53aGVuJHNlLmVzdGltYXRlXG5kZXNjci53aGVuWyxjKDIsMTg6MjEpXVxuYGBgIn0= -->
 <pre class="r"><code>descr.when &lt;-describeBy(summ.output$When,list(summ.output$Type),na.rm=TRUE,mat=TRUE)
 descr.when$confIV1 = descr.when$mean-1.96*descr.when$se
 descr.when$confIV2 = descr.when$mean+1.96*descr.when$se
@@ -245,10 +385,15 @@ descr.when$mean.estimate = 0.13*exp(0.78*descr.when$mean)
 descr.when$se.estimate = 0.13*exp(0.78*descr.when$se)
 descr.when$confIV1.estimate = descr.when$mean.estimate-1.96*descr.when$se.estimate
 descr.when$confIV2.estimate = descr.when$mean.estimate+1.96*descr.when$se.estimate
-
-descr.when[,c(2,18:21)]
-</code></pre>
+descr.when[,c(2,18:21)]</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NSwibnJvdyI6M30sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERpaXVCaVlHQmdZbUJtWldSZ1lnWXlXWmlBQkNNREN3TW5pSzVnWUdBV0JqSllnVFF2a0dZR1M0STBnTmtvaXRseVVzdFNjNHFCTEFHd0xFU1VKVG0vS0JYR0xrcE5USUd5Mll0VDg0cnppeXJSREdGTnpra3NocGtCTnprdE1ia2t2d2pJK2dmRWZDRFQ3WDhGWGk4SnVaTGdJTVNyVU1qemg4Lysza2JIcEl1N25zSGxEeDdpeVRqTSs4TCs0SFBKc3gvTnhPd1BibTJ6dmNpbUE1Zi8rb1BmMjQ4aHhFSGdTMmIyNlI4NTlxZlduSjJpVWFjSGwvKzNldjdjNkJVNURzS3ExOHQ4LzIrd2Y4SEcrL2Y0N0NoMDUrWWw1cWJDbk1zS2MyNTZVWDVwZ1NHVXg1dWJtcGlubDFwY2twbWJXQUlMQ2U3aVZIUWhnZVQ4dkRUUE1FTWM0a1lJY1ZRbmNCYmxsK3NoT3dNVzhzd1Job1lJcGhHQ2FRd3hnZmsvV2pCenBTU1dKT3FsRlFITmdnUTFpajNzK1FVbG1mbDVRRnVZb0NrQ1JUTmpFWm9BZjJrZXlGVXB1c2tacFhuWnVpWWdDNkNwQjRSNW9UUXpFcHNWWWlVTHpHSHdBRTNOUzgvTWd3VUlhMDVpVW1vT2xNTUg5RDNZODNvRlJabDVKVENmQUVXTDlVcnlTeEpoNnJpUzgzTmdJcEJrOUE4QUFNejVaLzhDQUFBPSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["group1"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["mean.estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["se.estimate"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["confIV1.estimate"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["confIV2.estimate"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"core","2":"1.6449809","3":"0.1387344","4":"1.3730615","5":"1.9169003","_rn_":"X11"},{"1":"read","2":"4.5128191","3":"0.1398651","4":"4.2386834","5":"4.7869547","_rn_":"X12"},{"1":"sensory","2":"0.4795688","3":"0.1383522","4":"0.2083985","5":"0.7507391","_rn_":"X13"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[3]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -256,36 +401,54 @@ descr.when[,c(2,18:21)]
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGVzY3Iud2hlbiRtZWFuLmVzdGltYXRlWzFdL2F2LmVtcFxuYGBgIn0= -->
 <pre class="r"><code>descr.when$mean.estimate[1]/av.emp</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDguMzI3MjFcbiJ9 -->
+<pre><code>[1] 8.32721</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgY2FsY3VsYXRlIGdyb3VwIHN0YXRzIGZvciBzZW5zb3J5LCBjb3JlIGtub3dsZWRnZSwgYW5kIHJlYWRcblxuc3VtbS5vdXRwdXQkQ29uZGl0aW9uID0gYXMuZmFjdG9yKGFzLmNoYXJhY3RlcihzdW1tLm91dHB1dCRDb25kaXRpb24pKVxuc3VtbS5vdXRwdXQkVHlwZSA9IGFzLmZhY3Rvcihhcy5jaGFyYWN0ZXIoc3VtbS5vdXRwdXQkVHlwZSkpXG5zdW1tLm91dHB1dCRHZW5kZXIgPSBhcy5mYWN0b3IoYXMuY2hhcmFjdGVyKHN1bW0ub3V0cHV0JEdlbmRlcikpXG5zdW1tLm91dHB1dCRQYXJlbnQgPSBhcy5mYWN0b3IoYXMuY2hhcmFjdGVyKHN1bW0ub3V0cHV0JFBhcmVudCkpXG5zdW1tLm91dHB1dCRTdWJJRCA9IGFzLmZhY3Rvcihhcy5jaGFyYWN0ZXIoc3VtbS5vdXRwdXQkU3ViSUQpKVxuc3VtbS5vdXRwdXQkRWR1Y2F0aW9uID0gYXMuZmFjdG9yKGFzLmNoYXJhY3Rlcihhcy5pbnRlZ2VyKHN1bW0ub3V0cHV0JEVkdWNhdGlvbik+MSkpXG5cbmRlc2NyLmhvdyA8LWRlc2NyaWJlQnkoc3VtbS5vdXRwdXQkSG93LGxpc3Qoc3VtbS5vdXRwdXQkVHlwZSksbmEucm09VFJVRSxtYXQ9VFJVRSlcbmRlc2NyLmhvdyRjb25mSVYxID0gZGVzY3IuaG93JG1lYW4tMS45NipkZXNjci5ob3ckc2VcbmRlc2NyLmhvdyRjb25mSVYyID0gZGVzY3IuaG93JG1lYW4rMS45NipkZXNjci5ob3ckc2VcblxuZGVzY3IuaG93WyxjKDIsNSwxNiwxNyldXG5cblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgY2FsY3VsYXRlIGdyb3VwIHN0YXRzIGZvciBzZW5zb3J5LCBjb3JlIGtub3dsZWRnZSwgYW5kIHJlYWRcbnN1bW0ub3V0cHV0JENvbmRpdGlvbiA9IGFzLmZhY3Rvcihhcy5jaGFyYWN0ZXIoc3VtbS5vdXRwdXQkQ29uZGl0aW9uKSlcbnN1bW0ub3V0cHV0JFR5cGUgPSBhcy5mYWN0b3IoYXMuY2hhcmFjdGVyKHN1bW0ub3V0cHV0JFR5cGUpKVxuc3VtbS5vdXRwdXQkR2VuZGVyID0gYXMuZmFjdG9yKGFzLmNoYXJhY3RlcihzdW1tLm91dHB1dCRHZW5kZXIpKVxuc3VtbS5vdXRwdXQkUGFyZW50ID0gYXMuZmFjdG9yKGFzLmNoYXJhY3RlcihzdW1tLm91dHB1dCRQYXJlbnQpKVxuc3VtbS5vdXRwdXQkU3ViSUQgPSBhcy5mYWN0b3IoYXMuY2hhcmFjdGVyKHN1bW0ub3V0cHV0JFN1YklEKSlcbnN1bW0ub3V0cHV0JEVkdWNhdGlvbiA9IGFzLmZhY3Rvcihhcy5jaGFyYWN0ZXIoYXMuaW50ZWdlcihzdW1tLm91dHB1dCRFZHVjYXRpb24pPjEpKVxuZGVzY3IuaG93IDwtZGVzY3JpYmVCeShzdW1tLm91dHB1dCRIb3csbGlzdChzdW1tLm91dHB1dCRUeXBlKSxuYS5ybT1UUlVFLG1hdD1UUlVFKVxuZGVzY3IuaG93JGNvbmZJVjEgPSBkZXNjci5ob3ckbWVhbi0xLjk2KmRlc2NyLmhvdyRzZVxuZGVzY3IuaG93JGNvbmZJVjIgPSBkZXNjci5ob3ckbWVhbisxLjk2KmRlc2NyLmhvdyRzZVxuZGVzY3IuaG93WyxjKDIsNSwxNiwxNyldXG5gYGAifQ== -->
 <pre class="r"><code>## calculate group stats for sensory, core knowledge, and read
-
 summ.output$Condition = as.factor(as.character(summ.output$Condition))
 summ.output$Type = as.factor(as.character(summ.output$Type))
 summ.output$Gender = as.factor(as.character(summ.output$Gender))
 summ.output$Parent = as.factor(as.character(summ.output$Parent))
 summ.output$SubID = as.factor(as.character(summ.output$SubID))
 summ.output$Education = as.factor(as.character(as.integer(summ.output$Education)&gt;1))
-
 descr.how &lt;-describeBy(summ.output$How,list(summ.output$Type),na.rm=TRUE,mat=TRUE)
 descr.how$confIV1 = descr.how$mean-1.96*descr.how$se
 descr.how$confIV2 = descr.how$mean+1.96*descr.how$se
-
-descr.how[,c(2,5,16,17)]
-</code></pre>
+descr.how[,c(2,5,16,17)]</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6M30sInJkZiI6Ikg0c0lBQUFBQUFBQUExMVJ1MDdETUJSMTQ0U3FrVnBBN013TU5GSmFpWVdoQTBpSXFSSkRsUW5rSms0SnVIYmxwQVcrZ0kvZ0Mvb2hIWGtNM1pCWVdRREJ4bFN3azl5MGpTWDdIdDlqbi9zNk8vWmF0bWNqaEF5RXJRb3lzSUttb1k0S01sRk4yMXVFOEk3MktsdFhGcWVrL3BEaXRjY2JqRTRvaXhYYVN0bk1hL3BDVXNDU2tpREgxWmp5V01pN2tvamxNeEtEUnFFY0VqOFJVcUdGMmcydDN2a01aNitQKzBlZGI1U3V6dE9iWHZPQy83ZzRmSjl1bnhmOHJQZnllM1hQQ3Y2TGQ1OS9UdllLZnQ2ZTlLY1B1K1YwT0JsU1NNZUVkQVpTakVjdUZEV2toRU5SdnVEaGFjOWR2N1pLb2pVcGJweFZZZWdWOWx4M0NWdEwyTTRVOEYrcE1YWkFFdUtFVW1sbHpWbUxVeFdqSkJKY1JUSDBESzNTNTRvc09UYkhYR2NWTlAzTE1iOXVIdWdBK2J6MXJ1Y1dyMkF6QzJsQ1loYTBpUEpCeEdIdUZpTjl5dkpMUTFXZkZ1K01aTVFUcUVSNVl5Y1JDWUYzdGk4WWVMTEJMLzRCSlU1THZyRUNBQUE9In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["group1"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["confIV1"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["confIV2"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"core","2":"0.9187955","3":"0.8866252","4":"0.9509658","_rn_":"X11"},{"1":"read","2":"1.0000000","3":"1.0000000","4":"1.0000000","_rn_":"X12"},{"1":"sensory","2":"0.2411765","3":"0.1667119","4":"0.3156410","_rn_":"X13"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[3]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3V0cHV0LmNvcmU9c3Vic2V0KHN1bW0ub3V0cHV0LHN1bW0ub3V0cHV0JFR5cGU9PVwiY29yZVwiKVxudC50ZXN0KG91dHB1dC5jb3JlJEhvdyxtdT0wLjUpXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3V0cHV0LmNvcmU9c3Vic2V0KHN1bW0ub3V0cHV0LHN1bW0ub3V0cHV0JFR5cGU9PVwiY29yZVwiKVxudC50ZXN0KG91dHB1dC5jb3JlJEhvdyxtdT0wLjUpXG5gYGAifQ== -->
 <pre class="r"><code>output.core=subset(summ.output,summ.output$Type==&quot;core&quot;)
-t.test(output.core$How,mu=0.5)
-</code></pre>
+t.test(output.core$How,mu=0.5)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5cdE9uZSBTYW1wbGUgdC10ZXN0XG5cbmRhdGE6ICBvdXRwdXQuY29yZSRIb3dcbnQgPSAyNS41MTUsIGRmID0gODQsIHAtdmFsdWUgPCAyLjJlLTE2XG5hbHRlcm5hdGl2ZSBoeXBvdGhlc2lzOiB0cnVlIG1lYW4gaXMgbm90IGVxdWFsIHRvIDAuNVxuOTUgcGVyY2VudCBjb25maWRlbmNlIGludGVydmFsOlxuIDAuODg2MTU1NyAwLjk1MTQzNTRcbnNhbXBsZSBlc3RpbWF0ZXM6XG5tZWFuIG9mIHggXG4wLjkxODc5NTUgXG4ifQ== -->
+<pre><code>
+    One Sample t-test
+
+data:  output.core$How
+t = 25.515, df = 84, p-value &lt; 2.2e-16
+alternative hypothesis: true mean is not equal to 0.5
+95 percent confidence interval:
+ 0.8861557 0.9514354
+sample estimates:
+mean of x 
+0.9187955 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -295,6 +458,15 @@ t.test(output.core$How,mu=0.5)
 fit.lm &lt;- lm(When.estimate~Gender+RawAge,data=output.core)
 lm.beta(fit.lm)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxubG0oZm9ybXVsYSA9IFdoZW4uZXN0aW1hdGUgfiBHZW5kZXIgKyBSYXdBZ2UsIGRhdGEgPSBvdXRwdXQuY29yZSlcblxuU3RhbmRhcmRpemVkIENvZWZmaWNpZW50czo6XG4oSW50ZXJjZXB0KSAgICAgR2VuZGVyTSAgICAgIFJhd0FnZSBcbiAgMC4wMDAwMDAwICAgMC4xMTk0ODEwICAtMC4zMjc0NzU3IFxuIn0= -->
+<pre><code>
+Call:
+lm(formula = When.estimate ~ Gender + RawAge, data = output.core)
+
+Standardized Coefficients::
+(Intercept)     GenderM      RawAge 
+  0.0000000   0.1194810  -0.3274757 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -302,35 +474,89 @@ lm.beta(fit.lm)</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShmaXQubG0pXG5gYGAifQ== -->
 <pre class="r"><code>summary(fit.lm)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxubG0oZm9ybXVsYSA9IFdoZW4uZXN0aW1hdGUgfiBHZW5kZXIgKyBSYXdBZ2UsIGRhdGEgPSBvdXRwdXQuY29yZSlcblxuUmVzaWR1YWxzOlxuICAgIE1pbiAgICAgIDFRICBNZWRpYW4gICAgICAzUSAgICAgTWF4IFxuLTIuNTg1NSAtMS4wNzQyIC0wLjMyMzkgIDAuNjYxNyAgNi45Mjc2IFxuXG5Db2VmZmljaWVudHM6XG4gICAgICAgICAgICBFc3RpbWF0ZSBTdGQuIEVycm9yIHQgdmFsdWUgUHIoPnx0fCkgICAgXG4oSW50ZXJjZXB0KSAgIDYuMDEyNSAgICAgMS4xODg4ICAgNS4wNTggMi41NGUtMDYgKioqXG5HZW5kZXJNICAgICAgIDAuNDUzOSAgICAgMC4zOTM2ICAgMS4xNTMgICAwLjI1MjEgICAgXG5SYXdBZ2UgICAgICAgLTAuNTQ4NyAgICAgMC4xNzM2ICAtMy4xNjEgICAwLjAwMjIgKiogXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwIOKAmCoqKuKAmSAwLjAwMSDigJgqKuKAmSAwLjAxIOKAmCrigJkgMC4wNSDigJgu4oCZIDAuMSDigJgg4oCZIDFcblxuUmVzaWR1YWwgc3RhbmRhcmQgZXJyb3I6IDEuNjAzIG9uIDgyIGRlZ3JlZXMgb2YgZnJlZWRvbVxuTXVsdGlwbGUgUi1zcXVhcmVkOiAgMC4xMjk4LFx0QWRqdXN0ZWQgUi1zcXVhcmVkOiAgMC4xMDg2IFxuRi1zdGF0aXN0aWM6IDYuMTE3IG9uIDIgYW5kIDgyIERGLCAgcC12YWx1ZTogMC4wMDMzNDJcbiJ9 -->
+<pre><code>
+Call:
+lm(formula = When.estimate ~ Gender + RawAge, data = output.core)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.5855 -1.0742 -0.3239  0.6617  6.9276 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   6.0125     1.1888   5.058 2.54e-06 ***
+GenderM       0.4539     0.3936   1.153   0.2521    
+RawAge       -0.5487     0.1736  -3.161   0.0022 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.603 on 82 degrees of freedom
+Multiple R-squared:  0.1298,    Adjusted R-squared:  0.1086 
+F-statistic: 6.117 on 2 and 82 DF,  p-value: 0.003342</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5zdW1tLncgPC0gZGVzY3JpYmVCeShvdXRwdXQuY29yZSRXaGVuLmVzdGltYXRlLG91dHB1dC5jb3JlJEdlbmRlcixuYS5ybT1UUlVFLG1hdD1UUlVFKVxuc3VtbS53JGNvbmZJVjEgPSBzdW1tLnckbWVhbi0xLjk2KnN1bW0udyRzZVxuc3VtbS53JGNvbmZJVjIgPSBzdW1tLnckbWVhbisxLjk2KnN1bW0udyRzZVxuc3VtbS53WyxjKDIsNSwxNiwxNyldXG5cblxuYGBgIn0= -->
-<pre class="r"><code>
-summ.w &lt;- describeBy(output.core$When.estimate,output.core$Gender,na.rm=TRUE,mat=TRUE)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbS53IDwtIGRlc2NyaWJlQnkob3V0cHV0LmNvcmUkV2hlbi5lc3RpbWF0ZSxvdXRwdXQuY29yZSRHZW5kZXIsbmEucm09VFJVRSxtYXQ9VFJVRSlcbnN1bW0udyRjb25mSVYxID0gc3VtbS53JG1lYW4tMS45NipzdW1tLnckc2VcbnN1bW0udyRjb25mSVYyID0gc3VtbS53JG1lYW4rMS45NipzdW1tLnckc2VcbnN1bW0ud1ssYygyLDUsMTYsMTcpXVxuYGBgIn0= -->
+<pre class="r"><code>summ.w &lt;- describeBy(output.core$When.estimate,output.core$Gender,na.rm=TRUE,mat=TRUE)
 summ.w$confIV1 = summ.w$mean-1.96*summ.w$se
 summ.w$confIV2 = summ.w$mean+1.96*summ.w$se
-summ.w[,c(2,5,16,17)]
-</code></pre>
+summ.w[,c(2,5,16,17)]</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6Mn0sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERpaXVCaVlHQmdZbUJtWldSZ1lnWXlXWmlBQkNNREN3TW5pSzVnWUdBV0Jva0NhVjZ3UXBBa21FWlJ5SmFUV3BhYVV3eGtDWUJsb2RyZFlBeGZOUFdzeVRtSnhURGxjRVBTRXBOTDhvdUFySDlBekFjeXlJR3Blb3IzbzlRbUIzYnRTYlppYlY5aDR2Yi8zaGtkLzY2azY4QVFraC9Vc1BJN1hEMXJBNy94U2N0M0RueE1XOVhYSkg5R3R6WXZNVGNWWmkwTHpOcjBvdnpTQWtNb2p5VTNOVEVQeW1aUHpzOUw4d3d6Uk9VYW9SbktXWlJmcm9kc01Nejd6QkdHaGdnbVZCdnpmelJmYzZVa2xpVHFwUlVCRFlENEhNVnc5dnlDa3N6OFBLRFJUS0I0WUVYVHpGaUVKaUJRbWdkeVNvcHVja1pwWHJhdW9RSElCbWlrZ1RBdklnTGhiQmFJblN3d2w3SENBaVkxTHowekx4VVdkam1KU2FrNVVBNGYwTTlnTCtzVkZHWG1sY0M4QWhRdDFpdkpMMG1FcWVOS3pzK0JpVUNpOVI4QS9MaWdBWFlDQUFBPSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["group1"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["confIV1"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["confIV2"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"F","2":"2.310341","3":"1.933154","4":"2.687529","_rn_":"X11"},{"1":"M","2":"2.896275","3":"2.041228","4":"3.751322","_rn_":"X12"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[2]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5maXQubG0gPC0gbG0oSG93fkdlbmRlcitSYXdBZ2UsZGF0YT1vdXRwdXQuY29yZSlcbmxtLmJldGEoZml0LmxtKVxuYGBgIn0= -->
-<pre class="r"><code>
-fit.lm &lt;- lm(How~Gender+RawAge,data=output.core)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0LmxtIDwtIGxtKEhvd35HZW5kZXIrUmF3QWdlLGRhdGE9b3V0cHV0LmNvcmUpXG5sbS5iZXRhKGZpdC5sbSlcbmBgYCJ9 -->
+<pre class="r"><code>fit.lm &lt;- lm(How~Gender+RawAge,data=output.core)
 lm.beta(fit.lm)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxubG0oZm9ybXVsYSA9IEhvdyB+IEdlbmRlciArIFJhd0FnZSwgZGF0YSA9IG91dHB1dC5jb3JlKVxuXG5TdGFuZGFyZGl6ZWQgQ29lZmZpY2llbnRzOjpcbihJbnRlcmNlcHQpICAgICBHZW5kZXJNICAgICAgUmF3QWdlIFxuIDAuMDAwMDAwMDAgIDAuMDQ3NzM1NjkgLTAuMTIwNjI5ODcgXG4ifQ== -->
+<pre><code>
+Call:
+lm(formula = How ~ Gender + RawAge, data = output.core)
+
+Standardized Coefficients::
+(Intercept)     GenderM      RawAge 
+ 0.00000000  0.04773569 -0.12062987 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShmaXQubG0pXG5cbmBgYCJ9 -->
-<pre class="r"><code>summary(fit.lm)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShmaXQubG0pXG5gYGAifQ== -->
+<pre class="r"><code>summary(fit.lm)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxubG0oZm9ybXVsYSA9IEhvdyB+IEdlbmRlciArIFJhd0FnZSwgZGF0YSA9IG91dHB1dC5jb3JlKVxuXG5SZXNpZHVhbHM6XG4gICAgIE1pbiAgICAgICAxUSAgIE1lZGlhbiAgICAgICAzUSAgICAgIE1heCBcbi0wLjkyNjcwIC0wLjA1NDkwICAwLjA2NDIyICAwLjA4MjgzICAwLjEyNjg2IFxuXG5Db2VmZmljaWVudHM6XG4gICAgICAgICAgICBFc3RpbWF0ZSBTdGQuIEVycm9yIHQgdmFsdWUgUHIoPnx0fCkgICAgXG4oSW50ZXJjZXB0KSAgMS4wMzQ4MCAgICAwLjExMjU1ICAgOS4xOTQgMi45NmUtMTQgKioqXG5HZW5kZXJNICAgICAgMC4wMTYxNiAgICAwLjAzNzI2ICAgMC40MzQgICAgMC42NjYgICAgXG5SYXdBZ2UgICAgICAtMC4wMTgwMiAgICAwLjAxNjQ0ICAtMS4wOTYgICAgMC4yNzYgICAgXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwIOKAmCoqKuKAmSAwLjAwMSDigJgqKuKAmSAwLjAxIOKAmCrigJkgMC4wNSDigJgu4oCZIDAuMSDigJgg4oCZIDFcblxuUmVzaWR1YWwgc3RhbmRhcmQgZXJyb3I6IDAuMTUxOCBvbiA4MiBkZWdyZWVzIG9mIGZyZWVkb21cbk11bHRpcGxlIFItc3F1YXJlZDogIDAuMDE4MDUsXHRBZGp1c3RlZCBSLXNxdWFyZWQ6ICAtMC4wMDU4OTcgXG5GLXN0YXRpc3RpYzogMC43NTM4IG9uIDIgYW5kIDgyIERGLCAgcC12YWx1ZTogMC40NzM4XG4ifQ== -->
+<pre><code>
+Call:
+lm(formula = How ~ Gender + RawAge, data = output.core)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.92670 -0.05490  0.06422  0.08283  0.12686 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  1.03480    0.11255   9.194 2.96e-14 ***
+GenderM      0.01616    0.03726   0.434    0.666    
+RawAge      -0.01802    0.01644  -1.096    0.276    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1518 on 82 degrees of freedom
+Multiple R-squared:  0.01805,   Adjusted R-squared:  -0.005897 
+F-statistic: 0.7538 on 2 and 82 DF,  p-value: 0.4738</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -341,6 +567,13 @@ summ.h$confIV1 = summ.h$mean-1.96*summ.h$se
 summ.h$confIV2 = summ.h$mean+1.96*summ.h$se
 summ.h[,c(2,5,16,17)]</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6Mn0sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERpaXVCaVlHQmdZbUJtWldSZ1lnWXlXWmlBQkNNREN3TW5pSzVnWUdBV0Jva0NhVjZ3UXBBa21FWlJ5SmFUV3BhYVV3eGtDWUJsb2RyZFlBeGZOUFdzeVRtSnhURGxjRVBTRXBOTDhvdUFySDlBekFjeXlQNnRaZWpTZTNYdjdOOCtkSEpZT1RzQUx2NzY2MWs1N2RlbDltODBkcjV1NnphRGk3K3J1YWM3VVNqZC92M01VMVBQck01Q3R6WXZNVGNWWmkwTHpOcjBvdnpTQWtNb2p5VTNOVEVQeW1aUHpzOUw4d3d6Uk9VYW9SbktXWlJmcm9kc01Nejd6QkdHaGdnbVZCdnpmelJmYzZVa2xpVHFwUlVCRFlENEhNVnc5dnlDa3N6OFBLRFJUS0I0WUVYVHpGaUVKaUJRbWdkeVNvcHVja1pwWHJhdW9USElCbWlrZ1RBdklnTGhiQmFJblN3d2w3SENBaVkxTHowekx4VVdkam1KU2FrNVVBNGYwTTlnTCtzVkZHWG1sY0M4QWhRdDFpdkpMMG1FcWVOS3pzK0JpVUNpOVI4QXRiR3AvSFlDQUFBPSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["group1"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["confIV1"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["confIV2"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"F","2":"0.9132488","3":"0.8737550","4":"0.9527427","_rn_":"X11"},{"1":"M","2":"0.9337474","3":"0.8799715","4":"0.9875234","_rn_":"X12"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[2]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Cmd+Option+I</em>.</p>

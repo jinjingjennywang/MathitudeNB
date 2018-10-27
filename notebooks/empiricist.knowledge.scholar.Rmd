@@ -85,6 +85,7 @@ autoplot(prcomp(pcadata), label=TRUE)
 
 ```{r}
 av.emp = mean(c(0.5, 0.0055,0.29, 0.25, 0.0019, 0.0054, 0.33))
+emps = c(6,0,av.emp)
 how.summ = data_t[,c(1:9,38,39,40,41)]
 output = data.frame(files=NULL)
 summ.output = data.frame(files=NULL)
@@ -103,6 +104,7 @@ for(i in c(1:nrow(data_t))){
     sum.sub$How[j] <- mean(how.sub$How[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
     sum.sub$When[j] <- mean(how.sub$When[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
     sum.sub$When.estimate[j]<-mean(how.sub$When.estimate[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
+    sum.sub$w.bias[j]<-sum.sub$When.estimate[j]-emps[j]
   }
   output = rbind(output,how.sub)
   summ.output = rbind(summ.output,sum.sub)
@@ -144,6 +146,9 @@ descr.when$mean.estimate[1]/av.emp
 ```{r}
 output.core=subset(summ.output,summ.output$Type=="core")
 t.test(output.core$How,mu=0.5)
+
+t.test(w.bias~Type,paired=TRUE,data=subset(summ.output,summ.output$Type!="read"))
+t.test(w.bias~Type,paired=TRUE,data=subset(summ.output,summ.output$Type!="sensory"))
 
 ```
 

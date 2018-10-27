@@ -90,9 +90,10 @@ colnames(chisqsave)=c("chisq","p")
 data$Group=as.factor(as.character(data$Group))
 count.when.see = data[,c(1,19)]
 #change column number; 19=see 23=wash
-table.when.see=table(count.when.see)
-chisq.test(table.when.see)
+#table.when.see=table(count.when.see)
+#chisq.test(table.when.see)
 
+chisqsave
 
 ```
 
