@@ -1,5 +1,4 @@
-# MathitudeNB
-intuitive empricist data analyses
+#intuitive empricist data analyses
 
 Experiment 1: adults: data file - mathitudemaster.csv; analysis file - empiricist.knowledge.main.Rmd
 
