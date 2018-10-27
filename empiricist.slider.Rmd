@@ -41,10 +41,11 @@ for(i in allitem){
 
 how_m = describe(data_t[6:15])[,c(3,13)]
 time_m = describe(data_t[16:25])[,c(3,13)]
-rownames(time_m) <- c("read","help","number","objperm","gravity","face","depth","color","hear","see")
+rownames(time_m) <- allitem
 summ_m = cbind(time_m,how_m)
 
 ### for plotting: summ_m$mean = 1.28*log(mean)+2.59
+summ_m
 
 ```
 

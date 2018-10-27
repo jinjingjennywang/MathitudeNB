@@ -21,75 +21,87 @@ library(qdapTools)
 library(lm.beta)
 
 ##### change current group to select dataset
-currentgroup = "MT.18.JL"
-currentcondition = c("1","2")
-
-#human-animal comparison
-read <- c("how.punctual")
-sensory <- c("how.eyes","how.taste.smell")
-core <- c("how.active","how.attentive","how.easy","how.fearful","how.smiley")
-types <- c("read","sensory","core")
-allitems<-c("punctual","active","attentive","easy","fearful","smiley","taste.smell","eyes")
-allhows <- c("how.punctual","how.active","how.attentive","how.easy","how.fearful","how.smiley","how.taste.smell","how.eyes")
-#######
-
+##### note:separate scripts for Experiments 3 and 4b
+currentgroup = c("scholar")
+currentcondition = c("natural","humanity","mind")
 
 ## prep; load data files & set parameters
-masterdata  = read.table(file = "/Users/jennywang/Google Drive/Museum/mathitude/data/alternative analyses/temperamentmaster.csv", sep=",",header=TRUE, na.strings="")
-masterdata_t = masterdata
-masterdata_t[,24:37]=(as.numeric(masterdata[,24:37]=="T"|masterdata[,24:37]=="O"))
+masterdata  = read.table(file = "/Users/jennywang/Google Drive/Museum/mathitude/data/alternative analyses/mathitudemaster.csv", sep=",",header=TRUE, na.strings="")
+data = subset(masterdata,masterdata$Group %in% currentgroup)
+data = subset(data,data$Condition %in% currentcondition)
+data_t = data
+data_t[,24:37]=(as.numeric(data[,24:37]=="T"|data[,24:37]=="O"))
 
-empirical = c(4,4,1,1,1,1,1,1,1,1)
 cols<- c(a.born="royalblue1",b.mature="skyblue2",c.teach="darkorange1",d.observe="orange")
 
-### current analysis target and dataloading
-data = subset(masterdata,masterdata$Group==currentgroup)
-data_t = subset(masterdata_t,masterdata_t$Group==currentgroup)
+read <- c("how.read")
+sensory <- c("how.see","how.hear")
+core <- c("how.color","how.depth","how.face","how.gravity","how.objperm","how.number","how.help")
+types <- c("read","sensory","core")
 
-#overall descriptives
-des_m = describeBy(data[10:23],group=NULL,na.rm=TRUE)
-dat_m = data[,24:37]
+allitems <-c("read","help","number","objperm","gravity","face","depth","color","hear","see")
+allhows <-c("how.read","how.help","how.number","how.objperm","how.gravity","how.face","how.depth","how.color","how.hear","how.see")
+
+allwhen<-c("when.read","when.help","when.number","when.objperm","when.gravity","when.face","when.depth","when.color","when.hear","when.see")
+empirical = c(6, 0.5, 0.0055,0.29, 0.25, 0.0019, 0.0054, 0.33, 0.0027, 0.052)
+
+####################################
+### overall descriptives based on timeline choices and proportion responses for plotting
+des_m = describeBy(data,group=NULL,na.rm=TRUE)
+dat_m = data[,24:33]
 table_m= mtabulate(dat_m)
-time_m = des_m
+time_m = des_m[10:19,]
+rownames(time_m) <- c("read","help","number","objperm","gravity","face","depth","color","hear","see")
 how_m = table_m/rowSums(table_m,na.rm=FALSE)
 colnames(how_m) <- c("b.mature","a.born","d.observe","c.teach")
-summ_m = cbind(how_m,time_m)
-summ_m$Category.num = c(11,10,9,8,6,4,3,2,1,1,7,5,12,13)
-summ_m<-summ_m[-c(9,11,12),]
-summ_m<-summ_m[order(summ_m$Category.num),]
+summ_m = cbind(time_m,how_m)
+summ_m$Category.num = c(10,9,8,7,6,5,4,3,2,1)
+summ_m$learning=summ_m$d.observe+summ_m$c.teach
+##age estimates based on actual findings
+summ_m$emp.age = empirical
+##converting timeline choice mean/se to age estimate
 summ_m$mean.estimate = 0.13*exp(0.78*summ_m$mean)
 summ_m$se.estimate = 0.13*exp(0.78*summ_m$se)
 summ_m$confIV1.estimate = summ_m$mean.estimate-1.96*summ_m$se.estimate
 summ_m$confIV2.estimate = summ_m$mean.estimate+1.96*summ_m$se.estimate
-summ_m
+summ_m$overratio=summ_m$mean.estimate/summ_m$emp.age
+
+##averages based on timeline choices
+summ_core=colMeans(summ_m[2:8,]) 
+summ_sense=colMeans(summ_m[9:10,]) 
+summ_3 = rbind(summ_m[1,],summ_core,summ_sense)
+summ_3$Category.num=c(3,2,1)
+summ_3$age.ratio=summ_3$mean.estimate/summ_3$emp.age
+rownames(summ_3)<-c("read","core","sensory")
+
+summ_m[,-c(1:18)]
 
 ```
 
 ```{r}
 # ## PCA ######### ########### cluster analysis ###########
-pcadata=data_t[,20:29] #mturk how
+pcadata=data_t[,24:33] #mturk how
 pcadata=na.omit(pcadata)
 pcadata=t(pcadata)
 autoplot(prcomp(pcadata), label=TRUE)
+
 ```
 
-
 ```{r}
-## calculate group stats for sensory, core knowledge, and read
-how.summ = data_t[,1:9]
+av.emp = mean(c(0.5, 0.0055,0.29, 0.25, 0.0019, 0.0054, 0.33))
+how.summ = data_t[,c(1:9,38,39,40,41)]
 output = data.frame(files=NULL)
 summ.output = data.frame(files=NULL)
-
 for(i in c(1:nrow(data_t))){
   how.sub = how.summ[i,]
   sum.sub = as.data.frame(lapply(how.sub, rep, 3))
-  how.sub = as.data.frame(lapply(how.sub, rep, 8))
-  for (k in c(1:8)){
+  how.sub = as.data.frame(lapply(how.sub, rep, 10))
+  for (k in c(1:10)){
     how.sub$Item[k] <- allhows[k]
     how.sub$How[k] <- data_t[[paste("how.",allitems[k],sep="")]][i]
     how.sub$When[k] <- data_t[[paste("when.",allitems[k],sep="")]][i]
     how.sub$When.estimate[k]<-0.13*exp(0.78*how.sub$When[k])
-  }
+    }
   for(j in c(1:3)){
     sum.sub$Type[j]<-types[j]
     sum.sub$How[j] <- mean(how.sub$How[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
@@ -100,12 +112,12 @@ for(i in c(1:nrow(data_t))){
   summ.output = rbind(summ.output,sum.sub)
 }
 
-summ.output$Condition = as.factor(as.character(summ.output$Condition))
+summ.output$Condition = as.factor(as.character(summ.output$Condition=="mind"))
 summ.output$Type = as.factor(as.character(summ.output$Type))
 summ.output$Gender = as.factor(as.character(summ.output$Gender))
 summ.output$Parent = as.factor(as.character(summ.output$Parent))
 summ.output$SubID = as.factor(as.character(summ.output$SubID))
-summ.output$Education = as.factor(as.character(summ.output$Education>1))
+summ.output$Education = as.factor(as.character(as.integer(summ.output$Education)>2)) #all academics had college+ degree, so changed to graduate+
 
 descr.how <-describeBy(summ.output$How,list(summ.output$Type),na.rm=TRUE,mat=TRUE)
 descr.how$confIV1 = descr.how$mean-1.96*descr.how$se
@@ -113,11 +125,9 @@ descr.how$confIV2 = descr.how$mean+1.96*descr.how$se
 
 descr.how[,c(2,5,16,17)]
 
-
 ```
 
 ```{r}
-
 descr.when <-describeBy(summ.output$When,list(summ.output$Type),na.rm=TRUE,mat=TRUE)
 descr.when$confIV1 = descr.when$mean-1.96*descr.when$se
 descr.when$confIV2 = descr.when$mean+1.96*descr.when$se
@@ -131,6 +141,11 @@ descr.when[,c(2,18:21)]
 ```
 
 ```{r}
+descr.when$mean.estimate[1]/av.emp
+```
+
+
+```{r}
 output.core=subset(summ.output,summ.output$Type=="core")
 t.test(output.core$How,mu=0.5)
 
@@ -138,7 +153,7 @@ t.test(output.core$How,mu=0.5)
 
 ```{r}
 ######### linear regression ###########
-fit.lm <- lm(When.estimate~Gender+Age+Education+Parent,data=output.core)
+fit.lm <- lm(When.estimate~Condition+Gender+Age+Education+Parent,data=output.core)
 lm.beta(fit.lm)
 ```
 
@@ -148,7 +163,7 @@ summary(fit.lm)
 
 ```{r}
 
-summ.w <- describeBy(output.core$When.estimate,output.core$Gender,na.rm=TRUE,mat=TRUE)
+summ.w <- describeBy(output.core$When.estimate,output.core$Condition,na.rm=TRUE,mat=TRUE)
 summ.w$confIV1 = summ.w$mean-1.96*summ.w$se
 summ.w$confIV2 = summ.w$mean+1.96*summ.w$se
 summ.w[,c(2,5,16,17)]
@@ -167,13 +182,20 @@ summ.w[,c(2,5,16,17)]
 
 ```{r}
 
-fit.lm <- lm(How~Gender+Age+Education+Parent,data=output.core)
+fit.lm <- lm(How~Condition+Gender+Age+Education+Parent,data=output.core)
 lm.beta(fit.lm)
 ```
 
 ```{r}
 summary(fit.lm)
 
+```
+
+```{r}
+summ.h <- describeBy(output.core$How,output.core$Condition,na.rm=TRUE,mat=TRUE)
+summ.h$confIV1 = summ.h$mean-1.96*summ.h$se
+summ.h$confIV2 = summ.h$mean+1.96*summ.h$se
+summ.h[,c(2,5,16,17)]
 ```
 
 ```{r}

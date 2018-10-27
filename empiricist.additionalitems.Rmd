@@ -85,38 +85,10 @@ pcadata=t(pcadata)
 autoplot(prcomp(pcadata), label=TRUE)
 ```
 
-```{r}
-###non parametric analysis
-
-data.summ <- cbind(data[,1:7],data[,c(8:26)])
-data.summ <- melt(data.summ,id.vars=1:7)
-data.summ$value = as.character(data.summ$value)
-data.summ$Item = rep("how",nrow(data.summ))
-for (i in c(1:nrow(data.summ))){
-  if(data.summ$variable[i]%in%read){
-    data.summ$Item[i]="how.instruct"
-  }else if(data.summ$variable[i]%in%sensory){
-    data.summ$Item[i]="how.sense"
-  }else{
-    data.summ$Item[i]="how.core"
-  }
-}
-
-data.count.core = subset(data.summ,data.summ$Item=="how.core")[,c(9,10)]
-data.count.core$value = (data.count.core$value=="O"|data.count.core$value=="T")
-table.count.core = table(data.count.core)
-table.p.core = table.count.core/colSums(table.count.core)
-chisq.test(table.count.core)
-
-table.summ=table(data.summ[,c(8,9)])
-table.p=table.summ/rowSums(table.summ)
-```
 
 ```{r}
 ## calculate group stats for sensory, core knowledge, and read
 data_g = data_t[,-c(14,23,33,42)]
-data_g[,25:41]=0.13*exp(0.78*data_t[,25:41])
-
 how.summ=data_t[,c(1:7)]
 output = data.frame(files=NULL)
 summ.output = data.frame(files=NULL)
@@ -129,11 +101,13 @@ for(i in c(1:nrow(data_g))){
     how.sub$Item[k-7] <- colnames(data_g)[k]
     how.sub$How[k-7] <- data_g[i,k]
     how.sub$When[k-7] <- data_g[i,k+17]
+    how.sub$When.estimate[k-7]<-0.13*exp(0.78*how.sub$When[k-7])
   }
   for(j in c(1:3)){
     sum.sub$Type[j]<-types[j]
     sum.sub$How[j] <- mean(how.sub$How[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
     sum.sub$When[j] <- mean(how.sub$When[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
+    sum.sub$When.estimate[j]<-mean(how.sub$When.estimate[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
   }
   output = rbind(output,how.sub)
   summ.output = rbind(summ.output,sum.sub)
@@ -158,8 +132,13 @@ descr.how
 descr.when <-describeBy(summ.output$When,list(summ.output$Type),na.rm=TRUE,mat=TRUE)
 descr.when$confIV1 = descr.when$mean-1.96*descr.when$se
 descr.when$confIV2 = descr.when$mean+1.96*descr.when$se
+descr.when$mean.estimate = 0.13*exp(0.78*descr.when$mean)
+descr.when$se.estimate = 0.13*exp(0.78*descr.when$se)
+descr.when$confIV1.estimate = descr.when$mean.estimate-1.96*descr.when$se.estimate
+descr.when$confIV2.estimate = descr.when$mean.estimate+1.96*descr.when$se.estimate
 
-descr.when
+descr.when[,c(2,18:21)]
+
 ```
 
 ```{r}
@@ -171,7 +150,7 @@ t.test(output.core$How,mu=0.5)
 ```{r}
 ######### linear regression ###########
 output.core=na.omit(output.core)
-fit.lm <- lm(When~GENDER+AGE+EDUCATION+PARENT,data=output.core)
+fit.lm <- lm(When.estimate~GENDER+AGE+EDUCATION+PARENT,data=output.core)
 lm.beta(fit.lm)
 ```
 
@@ -181,11 +160,19 @@ summary(fit.lm)
 
 ```{r}
 
-summ.w <- describeBy(output.core$When,output.core$GENDER,na.rm=TRUE,mat=TRUE)
+summ.w <- describeBy(output.core$When.estimate,output.core$GENDER,na.rm=TRUE,mat=TRUE)
 summ.w$confIV1 = summ.w$mean-1.96*summ.w$se
 summ.w$confIV2 = summ.w$mean+1.96*summ.w$se
 summ.w[,c(2,5,16,17)]
 
+
+```
+
+```{r}
+summ.w <- describeBy(output.core$When.estimate,output.core$EDUCATION,na.rm=TRUE,mat=TRUE)
+summ.w$confIV1 = summ.w$mean-1.96*summ.w$se
+summ.w$confIV2 = summ.w$mean+1.96*summ.w$se
+summ.w[,c(2,5,16,17)]
 
 ```
 

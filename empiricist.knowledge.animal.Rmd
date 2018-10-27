@@ -1,0 +1,225 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+rm(list = ls(all = TRUE))
+#load needed libraries
+library(FactoMineR)
+library(psych)
+library(gdata)
+library(data.table)
+library(tidyr)
+library(reshape2)
+library(ggfortify)
+library(qdapTools)
+library(lm.beta)
+
+##### change current group to select dataset
+currentgroup = c("human","animal")
+currentcondition = c("human","animal")
+
+#human-animal comparison
+read <- c("how.wash")
+sensory <- c("how.see")
+core <- c("how.objperm","how.number","how.smnum","how.gaze","how.angle","how.color","how.depth","how.face")
+types <- c("read","sensory","core")
+allitems<-c("wash","objperm","number","smnum","gaze","angle","color","depth","face","see")
+allhows <- c("how.wash","how.objperm","how.number","how.smnum","how.gaze","how.angle","how.color","how.depth","how.face","how.see")
+#######
+
+
+## prep; load data files & set parameters
+masterdata  = read.table(file = "/Users/jennywang/Google Drive/Museum/mathitude/data/alternative analyses/mathitudemaster.csv", sep=",",header=TRUE, na.strings="")
+masterdata_t = masterdata
+masterdata_t[,24:37]=(as.numeric(masterdata[,24:37]=="T"|masterdata[,24:37]=="O"))
+
+cols<- c(a.born="royalblue1",b.mature="skyblue2",c.teach="darkorange1",d.observe="orange")
+
+### current analysis target and dataloading
+data = subset(masterdata,masterdata$Group %in% currentgroup)
+data_t = subset(masterdata_t,masterdata_t$Group %in% currentgroup)
+data = subset(data,data$Condition %in% currentcondition)
+data_t = subset(data_t,data_t$Condition %in% currentcondition)
+
+
+
+```
+
+```{r}
+# ## PCA ######### ########### cluster analysis ###########
+# pcadata=data_t[,24:33] #mturk how
+# pcadata=na.omit(pcadata)
+# pcadata=t(pcadata)
+# autoplot(prcomp(pcadata), label=TRUE)
+
+```
+
+```{r}
+############################## non-parametric analyses #########
+data.summ <- cbind(data[,1:7],data[,c(37, 27, 26, 36, 35, 34, 31, 30, 29, 33)])
+data.summ <- melt(data.summ,id.vars=1:7)
+data.summ$value = as.character(data.summ$value)
+data.summ$Item = rep("how",nrow(data.summ))
+for (i in c(1:nrow(data.summ))){
+  if(data.summ$variable[i]=="how.wash"){
+    data.summ$Item[i]=as.character(data.summ$variable[i])
+  }else if(data.summ$variable[i]%in%c("how.see","how.hear")){
+    data.summ$Item[i]="how.sense"
+  }else{
+    data.summ$Item[i]="how.core"
+  }
+}
+data.summ$Group = as.factor(as.character(data.summ$Group))
+data.summ$Condition = as.factor(as.character(data.summ$Condition))
+
+## group comparison using chi squares
+chisqsave = data.frame(files=NULL)
+for(i in allhows){
+  temp.count = subset(data.summ,data.summ$variable==i)[,c(7,9)]
+  temp.count$value = (temp.count$value=="O"|temp.count$value=="T")
+  temp.table = table(temp.count)
+  temp.chisq = cbind(chisq.test(temp.table)$statistic,chisq.test(temp.table)$p.value)
+  chisqsave=rbind(chisqsave,temp.chisq)
+}
+rownames(chisqsave)=allhows
+colnames(chisqsave)=c("chisq","p")
+
+data$Group=as.factor(as.character(data$Group))
+count.when.see = data[,c(1,19)]
+#change column number; 19=see 23=wash
+table.when.see=table(count.when.see)
+chisq.test(table.when.see)
+
+
+```
+
+```{r}
+how.summ = data_t[,1:9]
+output = data.frame(files=NULL)
+summ.output = data.frame(files=NULL)
+dat_w = data_t[,c(23,13,12,22,21,20, 17, 16, 15, 19)]
+dat_h = data_t[,c(37, 27, 26, 36, 35, 34, 31, 30, 29, 33)]
+
+for(i in c(1:nrow(data_t))){
+  how.sub = how.summ[i,]
+  sum.sub = as.data.frame(lapply(how.sub, rep, 3))
+  how.sub = as.data.frame(lapply(how.sub, rep, 10))
+  for (k in c(1:10)){
+      how.sub$Item[k] <- allhows[k]
+      how.sub$How[k] <- dat_h[i,k]
+      how.sub$When[k] <- dat_w[i,k]
+  }
+  for(j in c(1:3)){
+    sum.sub$Type[j]<-types[j]
+    sum.sub$How[j] <- mean(how.sub$How[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
+    sum.sub$When[j] <- mean(how.sub$When[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
+  }
+  output = rbind(output,how.sub)
+  summ.output = rbind(summ.output,sum.sub)
+}
+
+summ.output$Condition = as.factor(as.character(summ.output$Condition=="mind"))
+summ.output$Type = as.factor(as.character(summ.output$Type))
+summ.output$Gender = as.factor(as.character(summ.output$Gender))
+summ.output$Parent = as.factor(as.character(summ.output$Parent))
+summ.output$SubID = as.factor(as.character(summ.output$SubID))
+summ.output$Education = as.factor(as.character(as.integer(summ.output$Education)>2)) #all academics had college+ degree, so changed to graduate+
+
+descr.how <-describeBy(summ.output$How,list(summ.output$Type,summ.output$Group),na.rm=TRUE,mat=TRUE)
+descr.how$confIV1 = descr.how$mean-1.96*descr.how$se
+descr.how$confIV2 = descr.how$mean+1.96*descr.how$se
+
+descr.how[c(1:3,13:15),c(2,3,6,17,18)]
+
+```
+
+```{r}
+descr.when <-describeBy(summ.output$When,list(summ.output$Type,summ.output$Group),na.rm=TRUE,mat=TRUE)
+descr.when$confIV1 = descr.when$mean-1.96*descr.when$se
+descr.when$confIV2 = descr.when$mean+1.96*descr.when$se
+descr.when[c(1:3,13:15),c(2,3,6,17,18)]
+
+```
+
+
+
+```{r}
+output.core=subset(summ.output,summ.output$Type=="core")
+t.test(output.core$How,mu=0.5)
+
+```
+
+```{r}
+######### linear regression ANIMAL ###########
+fit.lm <- lm(When~Gender+Age+Education+Parent,data=subset(output.core,output.core$Group=="animal"))
+lm.beta(fit.lm)
+```
+
+```{r}
+summary(fit.lm)
+```
+
+```{r}
+fit.lm <- lm(When~Gender+Age+Education+Parent,data=subset(output.core,output.core$Group=="human"))
+lm.beta(fit.lm)
+```
+
+```{r}
+summary(fit.lm)
+
+```
+
+```{r}
+
+summ.w <- describeBy(output.core$When,list(output.core$Group,output.core$Parent),na.rm=TRUE,mat=TRUE)
+summ.w$confIV1 = summ.w$mean-1.96*summ.w$se
+summ.w$confIV2 = summ.w$mean+1.96*summ.w$se
+summ.w[c(1,10,5,14),c(2,3,6,17,18)]
+
+```
+
+```{r}
+fit.lm <- lm(How~Gender+Age+Education+Parent,data=subset(output.core,output.core$Group=="animal"))
+lm.beta(fit.lm)
+
+
+```
+
+```{r}
+summary(fit.lm)
+
+```
+
+```{r}
+
+fit.lm <- lm(How~Gender+Age+Education+Parent,data=subset(output.core,output.core$Group=="human"))
+lm.beta(fit.lm)
+```
+
+```{r}
+summary(fit.lm)
+
+```
+
+```{r}
+summ.h <- describeBy(output.core$How,list(output.core$Group,output.core$Education),na.rm=TRUE,mat=TRUE)
+summ.h$confIV1 = summ.h$mean-1.96*summ.h$se
+summ.h$confIV2 = summ.h$mean+1.96*summ.h$se
+summ.h[c(1,10,5,14),c(2,3,6,17,18)]
+```
+
+
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

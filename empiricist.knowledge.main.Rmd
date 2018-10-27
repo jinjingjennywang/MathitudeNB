@@ -8,7 +8,7 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 
 ```{r}
-rm(list = ls(all = TRUE))
+#rm(list = ls(all = TRUE))
 #load needed libraries
 library(FactoMineR)
 library(psych)
@@ -88,9 +88,6 @@ autoplot(prcomp(pcadata), label=TRUE)
 ```
 
 ```{r}
-data[,10:23]=0.13*exp(0.78*data[,10:23])
-data_t[,10:23]=0.13*exp(0.78*data_t[,10:23])
-
 av.emp = mean(c(0.5, 0.0055,0.29, 0.25, 0.0019, 0.0054, 0.33))
 how.summ = data_t[,c(1:9,38,39,40,41)]
 output = data.frame(files=NULL)
@@ -99,15 +96,17 @@ for(i in c(1:nrow(data_t))){
   how.sub = how.summ[i,]
   sum.sub = as.data.frame(lapply(how.sub, rep, 3))
   how.sub = as.data.frame(lapply(how.sub, rep, 10))
-  for (k in c(24:33)){
-    how.sub$Item[k-23] <- colnames(data_t)[k]
-    how.sub$How[k-23] <- data_t[i,k]
-    how.sub$When[k-23] <- data_t[i,k-14]
-  }
+  for (k in c(1:10)){
+    how.sub$Item[k] <- allhows[k]
+    how.sub$How[k] <- data_t[[paste("how.",allitems[k],sep="")]][i]
+    how.sub$When[k] <- data_t[[paste("when.",allitems[k],sep="")]][i]
+    how.sub$When.estimate[k]<-0.13*exp(0.78*how.sub$When[k])
+    }
   for(j in c(1:3)){
     sum.sub$Type[j]<-types[j]
     sum.sub$How[j] <- mean(how.sub$How[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
     sum.sub$When[j] <- mean(how.sub$When[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
+    sum.sub$When.estimate[j]<-mean(how.sub$When.estimate[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
   }
   output = rbind(output,how.sub)
   summ.output = rbind(summ.output,sum.sub)
@@ -123,13 +122,17 @@ descr.how[,c(2,5,16,17)]
 descr.when <-describeBy(summ.output$When,list(summ.output$Type),na.rm=TRUE,mat=TRUE)
 descr.when$confIV1 = descr.when$mean-1.96*descr.when$se
 descr.when$confIV2 = descr.when$mean+1.96*descr.when$se
+descr.when$mean.estimate = 0.13*exp(0.78*descr.when$mean)
+descr.when$se.estimate = 0.13*exp(0.78*descr.when$se)
+descr.when$confIV1.estimate = descr.when$mean.estimate-1.96*descr.when$se.estimate
+descr.when$confIV2.estimate = descr.when$mean.estimate+1.96*descr.when$se.estimate
 
-descr.when[,c(2,5,16,17)]
+descr.when[,c(2,18:21)]
 
 ```
 
 ```{r}
-descr.when$mean[1]/av.emp
+descr.when$mean.estimate[1]/av.emp
 ```
 
 
@@ -163,7 +166,7 @@ t.test(output.core$How,mu=0.5)
 
 ```{r}
 ######### linear regression ###########
-fit.lm <- lm(When~Gender+Age+Education+Parent+courses,data=output.core)
+fit.lm <- lm(When.estimate~Gender+Age+Education+Parent+courses,data=output.core)
 lm.beta(fit.lm)
 ```
 
@@ -173,7 +176,7 @@ summary(fit.lm)
 
 ```{r}
 
-summ.w <- describeBy(output.core$When,output.core$Gender,na.rm=TRUE,mat=TRUE)
+summ.w <- describeBy(output.core$When.estimate,output.core$Gender,na.rm=TRUE,mat=TRUE)
 summ.w$confIV1 = summ.w$mean-1.96*summ.w$se
 summ.w$confIV2 = summ.w$mean+1.96*summ.w$se
 summ.w[,c(2,5,16,17)]
@@ -182,7 +185,7 @@ summ.w[,c(2,5,16,17)]
 ```
 
 ```{r}
-summ.w <- describeBy(output.core$When,output.core$Education,na.rm=TRUE,mat=TRUE)
+summ.w <- describeBy(output.core$When.estimate,output.core$Education,na.rm=TRUE,mat=TRUE)
 summ.w$confIV1 = summ.w$mean-1.96*summ.w$se
 summ.w$confIV2 = summ.w$mean+1.96*summ.w$se
 
