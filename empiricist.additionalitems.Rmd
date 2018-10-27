@@ -1,11 +1,7 @@
 ---
-title: "R Notebook"
+title: "Experiment 1c additional instructed abilities and adults' knowledge origins belief"
 output: html_notebook
 ---
-
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 
 ```{r}
 rm(list = ls(all = TRUE))
@@ -69,7 +65,7 @@ summ_m$confIV2.estimate = summ_m$mean.estimate+1.96*summ_m$se.estimate
 
 summ_m
 
-summ_m[order(summ_m$Category.num),][-c(1,2),c(24,27,28,29)]
+summ_m[order(summ_m$Category.num),][-c(1,2),c(24,27,28,29, 30)]
 
 ```
 
@@ -138,6 +134,13 @@ descr.when$confIV1.estimate = descr.when$mean.estimate-1.96*descr.when$se.estima
 descr.when$confIV2.estimate = descr.when$mean.estimate+1.96*descr.when$se.estimate
 
 descr.when[,c(2,18:21)]
+
+```
+
+```{r}
+av.emp = mean(c(0.5, 0.0055,0.29, 0.25, 0.0019, 0.0054, 0.33))
+
+descr.when$mean.estimate[1]/av.emp
 
 ```
 

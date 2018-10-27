@@ -1,11 +1,7 @@
 ---
-title: "R Notebook"
+title: "Experiment 2 entering age in number and use slider to indicate %genes vs. experience"
 output: html_notebook
 ---
-
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 
 ```{r}
 rm(list = ls(all = TRUE))
@@ -45,7 +41,10 @@ rownames(time_m) <- allitem
 summ_m = cbind(time_m,how_m)
 
 ### for plotting: summ_m$mean = 1.28*log(mean)+2.59
+summ_m$confIV1 = summ_m$mean-1.96*summ_m$se
+summ_m$confIV2 = summ_m$mean+1.96*summ_m$se
 summ_m
+
 
 ```
 

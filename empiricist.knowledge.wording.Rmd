@@ -1,11 +1,7 @@
 ---
-title: "R Notebook"
+title: "Experiment 1b impact of different wordings on adults' beliefs about knowledge"
 output: html_notebook
 ---
-
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 
 ```{r}
 rm(list = ls(all = TRUE))
@@ -149,6 +145,7 @@ descr.when$mean.estimate[1]/av.emp
 output.core=subset(summ.output,summ.output$Type=="core")
 t.test(output.core$How,mu=0.5)
 
+summary(aov(When.estimate~Condition*Type+Error(SubID),data=summ.output))
 ```
 
 ```{r}
