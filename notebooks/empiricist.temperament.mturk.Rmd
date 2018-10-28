@@ -34,8 +34,6 @@ allhows <- c("how.punctual","how.active","how.attentive","how.easy","how.fearful
 masterdata  = read.table(file = "/Users/jennywang/Google Drive/Museum/mathitude/data/alternative analyses/temperamentmaster.csv", sep=",",header=TRUE, na.strings="")
 masterdata_t = masterdata
 masterdata_t[,24:37]=(as.numeric(masterdata[,24:37]=="T"|masterdata[,24:37]=="O"))
-
-empirical = c(4,4,1,1,1,1,1,1,1,1)
 cols<- c(a.born="royalblue1",b.mature="skyblue2",c.teach="darkorange1",d.observe="orange")
 
 ### current analysis target and dataloading

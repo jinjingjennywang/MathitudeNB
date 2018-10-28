@@ -63,9 +63,8 @@ summ_m$se.estimate = 0.13*exp(0.78*summ_m$se)
 summ_m$confIV1.estimate = summ_m$mean.estimate-1.96*summ_m$se.estimate
 summ_m$confIV2.estimate = summ_m$mean.estimate+1.96*summ_m$se.estimate
 
-summ_m
-
-summ_m[order(summ_m$Category.num),][-c(1,2),c(24,27,28,29, 30)]
+summ_s=summ_m[order(summ_m$Category.num),][-c(1,2),c(24,27,28,29, 30)]
+summ_s
 
 ```
 
