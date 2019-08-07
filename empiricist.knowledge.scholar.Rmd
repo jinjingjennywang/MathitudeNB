@@ -193,6 +193,11 @@ summary(fit.lm)
 ```
 
 ```{r}
+t.test(When.estimate~Condition,data=output.core)
+t.test(How~Condition,data=output.core)
+```
+
+```{r}
 summ.h <- describeBy(output.core$How,output.core$Condition,na.rm=TRUE,mat=TRUE)
 summ.h$confIV1 = summ.h$mean-1.96*summ.h$se
 summ.h$confIV2 = summ.h$mean+1.96*summ.h$se
