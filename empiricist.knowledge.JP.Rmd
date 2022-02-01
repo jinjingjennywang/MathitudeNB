@@ -1,0 +1,398 @@
+---
+title: "Experiment 3 Hindu participants' beliefs about knowledge"
+output: html_notebook
+---
+
+```{r}
+rm(list = ls(all = TRUE))
+#load needed libraries
+library(FactoMineR)
+library(psych)
+library(gdata)
+library(data.table)
+library(tidyr)
+library(reshape2)
+library(ggfortify)
+library(qdapTools)
+library(lm.beta)
+
+##### change current group to select dataset
+##### note:separate scripts for Experiments 3 and 4b
+currentgroup = c("US","JP")
+currentcondition = c(1)
+
+## prep; load data files & set parameters
+masterdata  = read.table(file = "/Users/jennywang/Google Drive/Museum/mathitude/data/alternative analyses/mathitudemaster jp.csv", sep=",",header=TRUE, na.strings="")
+data = subset(masterdata,masterdata$Group %in% currentgroup)
+data = subset(data,data$Experiment %in% currentcondition)
+data_t = data
+data_t[,24:37]=(as.numeric(data[,24:37]=="T"|data[,24:37]=="O"))
+
+cols<- c(a.born="royalblue1",b.mature="skyblue2",c.teach="darkorange1",d.observe="orange")
+
+read <- c("how.read")
+sensory <- c("how.see","how.hear")
+core <- c("how.color","how.depth","how.face","how.gravity","how.objperm","how.number","how.help")
+types <- c("read","sensory","core")
+
+allitems <-c("read","help","number","objperm","gravity","face","depth","color","hear","see")
+allhows <-c("how.read","how.help","how.number","how.objperm","how.gravity","how.face","how.depth","how.color","how.hear","how.see")
+
+allwhen<-c("when.read","when.help","when.number","when.objperm","when.gravity","when.face","when.depth","when.color","when.hear","when.see")
+empirical = c(6, 0.5, 0.0055,0.29, 0.25, 0.0019, 0.0054, 0.33, 0.0027, 0.052)
+
+
+```
+
+```{r}
+# ## PCA ######### ########### cluster analysis ###########
+pcadata=data_t[,24:33] #mturk how
+pcadata=na.omit(pcadata)
+pcadata=t(pcadata)
+autoplot(prcomp(pcadata), label=TRUE)
+
+```
+
+```{r}
+av.emp = mean(c(0.5, 0.0055,0.29, 0.25, 0.0019, 0.0054, 0.33))
+how.summ = data_t[,c(1:9,38,39,40,41)]
+output = data.frame(files=NULL)
+summ.output = data.frame(files=NULL)
+for(i in c(1:nrow(data_t))){
+  how.sub = how.summ[i,]
+  sum.sub = as.data.frame(lapply(how.sub, rep, 3))
+  how.sub = as.data.frame(lapply(how.sub, rep, 10))
+  for (k in c(1:10)){
+    how.sub$Item[k] <- allhows[k]
+    how.sub$How[k] <- data_t[[paste("how.",allitems[k],sep="")]][i]
+    how.sub$When[k] <- data_t[[paste("when.",allitems[k],sep="")]][i]
+    how.sub$When.estimate[k]<-0.13*exp(0.78*how.sub$When[k])
+    }
+  for(j in c(1:3)){
+    sum.sub$Type[j]<-types[j]
+    sum.sub$How[j] <- mean(how.sub$How[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
+    sum.sub$When[j] <- mean(how.sub$When[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
+    sum.sub$When.estimate[j]<-mean(how.sub$When.estimate[how.sub$Item %in% eval(parse(text = types[j]))],na.rm=TRUE)
+  }
+  output = rbind(output,how.sub)
+  summ.output = rbind(summ.output,sum.sub)
+}
+
+descr.how <-describeBy(summ.output$How,list(summ.output$Type),na.rm=TRUE,mat=TRUE)
+descr.how$confIV1 = descr.how$mean-1.96*descr.how$se
+descr.how$confIV2 = descr.how$mean+1.96*descr.how$se
+
+descr.how[,c(2,5,16,17)]
+```
+```{r}
+descr.when <-describeBy(summ.output$When,list(summ.output$Group,summ.output$Type),na.rm=TRUE,mat=TRUE)
+descr.when$confIV1 = descr.when$mean-1.96*descr.when$se
+descr.when$confIV2 = descr.when$mean+1.96*descr.when$se
+
+descr.when$mean.estimate = 0.13*exp(0.78*descr.when$mean)
+descr.when$se.estimate = 0.13*exp(0.78*descr.when$se)
+descr.when$confIV1.estimate = descr.when$mean.estimate-1.96*descr.when$se.estimate
+descr.when$confIV2.estimate = descr.when$mean.estimate+1.96*descr.when$se.estimate
+
+descr.when[,c(2,3,6,19:22)]
+
+```
+
+```{r}
+descr.when$mean.estimate[1]/av.emp
+```
+
+```{r}
+ggplot(data, aes(x=religion, color=Group)) +
+  geom_histogram(binwidth=0.5,fill="white", alpha=0.5, position="identity")
+```
+
+```{r}
+ggplot(data, aes(x=religion.cate, color=Group)) +
+  geom_histogram(stat="count",fill="white", alpha=0.5, position="identity")
+```
+
+
+
+
+
+```{r}
+## calculate group stats for sensory, core knowledge, and read
+
+summ.output$Condition = as.factor(as.character(summ.output$Condition))
+summ.output$Type = as.factor(as.character(summ.output$Type))
+summ.output$Gender = as.factor(as.character(summ.output$Gender))
+summ.output$Parent = as.factor(as.character(summ.output$Parent))
+summ.output$SubID = as.factor(as.character(summ.output$SubID))
+summ.output$Education = as.factor(as.character(as.integer(summ.output$Education)>1))
+
+descr.how <-describeBy(summ.output$How,list(summ.output$Group,summ.output$Type),na.rm=TRUE,mat=TRUE)
+descr.how$confIV1 = descr.how$mean-1.96*descr.how$se
+descr.how$confIV2 = descr.how$mean+1.96*descr.how$se
+
+descr.how
+
+
+```
+
+
+```{r}
+summ.expt1 = summ.output
+summ.temp=summ.expt1
+summ.expt1$Condition = summ.expt1$Group
+summ.expt1=subset(summ.expt1,summ.expt1$Experiment==1)
+output.core=subset(summ.output,summ.output$Type=="core")
+
+output.sensory = subset(summ.output,summ.output$Type=="sensory")
+output.read = subset(summ.output,summ.output$Type=="read")
+
+
+```
+
+```{r}
+t.test(output.core$How,mu=0.5)
+t.test(How~Group,data=output.core)
+t.test(When.estimate~Group,data=output.core)
+
+```
+
+```{r}
+######### linear regression ###########
+fit.lm <- lm(When.estimate~Group,data=output.core)
+lm.beta(fit.lm)
+```
+
+```{r}
+summary(fit.lm)
+```
+
+```{r}
+fit.lm <- lm(When.estimate~Group,data=output.read)
+lm.beta(fit.lm)
+```
+
+```{r}
+summary(fit.lm)
+```
+
+```{r}
+fit.lm <- aov(When.estimate~Group,data=output.sensory)
+lm.beta(fit.lm)
+```
+
+```{r}
+summary(fit.lm)
+
+t.test(When.estimate~Group,data=output.sensory)
+```
+
+
+
+
+
+```{r}
+
+fit.lm <- lm(How~Group,data=output.core)
+lm.beta(fit.lm)
+```
+
+```{r}
+summary(fit.lm)
+
+```
+
+```{r}
+summ.h <- describeBy(output.core$How,output.core$Group,na.rm=TRUE,mat=TRUE)
+summ.h$confIV1 = summ.h$mean-1.96*summ.h$se
+summ.h$confIV2 = summ.h$mean+1.96*summ.h$se
+summ.h[,c(2,5,16,17)]
+```
+
+```{r}
+summ.h <- describeBy(output.core$How,output.core$Gender,na.rm=TRUE,mat=TRUE)
+summ.h$confIV1 = summ.h$mean-1.96*summ.h$se
+summ.h$confIV2 = summ.h$mean+1.96*summ.h$se
+summ.h[,c(2,5,16,17)]
+```
+
+```{r}
+### overall descriptives based on timeline choices and proportion responses for plotting
+
+
+des_m = describeBy(data[data$Group=="US",],group=NULL,na.rm=TRUE)
+dat_m = data[data$Group=="US",24:33]
+table_m= mtabulate(dat_m)
+time_m = des_m[10:19,]
+rownames(time_m) <- c("read","help","number","objperm","gravity","face","depth","color","hear","see")
+how_m = table_m/rowSums(table_m,na.rm=FALSE)
+colnames(how_m) <- c("b.mature","a.born","d.observe","c.teach")
+summ_m = cbind(time_m,how_m)
+summ_m$Category = rownames(summ_m)
+summ_m$Category.num = c(10,9,8,7,6,5,4,3,2,1)
+##age estimates based on actual findings
+summ_m$emp.age = empirical
+##converting timeline choice mean/se to age estimate
+summ_m$mean.estimate = 0.13*exp(0.78*summ_m$mean)
+summ_m$se.estimate = 0.13*exp(0.78*summ_m$se)
+summ_m$confIV1.estimate = summ_m$mean.estimate-1.96*summ_m$se.estimate
+summ_m$confIV2.estimate = summ_m$mean.estimate+1.96*summ_m$se.estimate
+summ_m$Empirical = empirical
+
+summ_US = summ_m
+summ_US$Group = rep("US",nrow(summ_US))
+
+des_m = describeBy(data[data$Group=="JP",],group=NULL,na.rm=TRUE)
+dat_m = data[data$Group=="JP",24:33]
+table_m= mtabulate(dat_m)
+time_m = des_m[10:19,]
+rownames(time_m) <- c("read","help","number","objperm","gravity","face","depth","color","hear","see")
+how_m = table_m/rowSums(table_m,na.rm=FALSE)
+colnames(how_m) <- c("b.mature","a.born","d.observe","c.teach")
+summ_m = cbind(time_m,how_m)
+summ_m$Category = rownames(summ_m)
+summ_m$Category.num = c(10,9,8,7,6,5,4,3,2,1)
+##age estimates based on actual findings
+summ_m$emp.age = empirical
+##converting timeline choice mean/se to age estimate
+summ_m$mean.estimate = 0.13*exp(0.78*summ_m$mean)
+summ_m$se.estimate = 0.13*exp(0.78*summ_m$se)
+summ_m$confIV1.estimate = summ_m$mean.estimate-1.96*summ_m$se.estimate
+summ_m$confIV2.estimate = summ_m$mean.estimate+1.96*summ_m$se.estimate
+summ_m$Empirical = empirical
+summ_JP = summ_m
+summ_JP$Group = rep("JP",nrow(summ_JP))
+
+summ_all = rbind(summ_JP,summ_US)
+
+#all_descrep$group2=as.numeric(all_descrep$group2)
+
+ggplot(data=summ_all,aes(x=Category,y=mean.estimate, color=Group))+
+  geom_point(stat="identity", size=3)+
+  #geom_line(data=sigfitdata,aes(x=value,y=predict))+
+  geom_errorbar(data=summ_all,aes(ymin=confIV1.estimate,ymax=confIV2.estimate),alpha=0.3)+
+  labs(y="Age Estimate\n", x="\nCategory")+
+  #scale_y_continuous(labels = scales::percent, limits=c(0,1))+
+  theme_classic()+
+  theme(legend.position="top",
+        legend.text=element_text(size=14),
+        axis.text=element_text(size=14),
+        axis.title=element_text(size=16,face="bold"))
+
+```
+```{r}
+######################### plot summary (collapse core knowledge)
+library(plotrix)
+
+y=c(0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5)
+x=c(-0.5:10.5)
+summ_m$Empirical = c(5,1,1,1,1,1,1,1,1,1)
+
+pdf(paste("mathitude_JP",currentcondition," actualage.pdf",sep=""),width=8,height=8)
+plot(x,y,type = "n",xlab="Category",ylab="Timeline",xlim=c(-0.5,10.5),ylim=c(0.41,5.5),axes=FALSE)
+##for presentation#axis(side=1,at = summ_m$Category.num,labels = summ_m$Category,col = "white")
+###axis(side=4,col = "white")
+axis(side=1,at = summ_m$Category.num,labels = summ_m$Category)
+axis(side=4)
+floating.pie(summ_m$Category.num[1],summ_m$mean[1],c(summ_m$a.born[1],summ_m$b.mature[1],summ_m$d.observe[1],summ_m$c.teach[1]),
+             radius = 0.4,col=c("royalblue1","skyblue2","orange","darkorange1"),startpos = -2,border=NA)
+floating.pie(summ_m$Category.num[2],summ_m$mean[2],c(summ_m$a.born[2],summ_m$b.mature[2],summ_m$d.observe[2],summ_m$c.teach[2]),
+             radius = 0.4,col=c("royalblue1","skyblue2","orange","darkorange1"),startpos = -1.6,border=NA)
+floating.pie(summ_m$Category.num[3],summ_m$mean[3],c(summ_m$a.born[3],summ_m$b.mature[3],summ_m$d.observe[3],summ_m$c.teach[3]),
+             radius = 0.4,col=c("royalblue1","skyblue2","orange","darkorange1"),startpos = -1.6,border=NA)
+floating.pie(summ_m$Category.num[4],summ_m$mean[4],c(summ_m$a.born[4],summ_m$b.mature[4],summ_m$d.observe[4],summ_m$c.teach[4]),
+             radius = 0.4,col=c("royalblue1","skyblue2","orange","darkorange1"),startpos = -1.6,border=NA)
+floating.pie(summ_m$Category.num[5],summ_m$mean[5],c(summ_m$a.born[5],summ_m$b.mature[5],summ_m$d.observe[5],summ_m$c.teach[5]),
+             radius = 0.4,col=c(c("royalblue1","skyblue2","orange","darkorange1")),startpos = -1.6,border=NA)
+floating.pie(summ_m$Category.num[6],summ_m$mean[6],c(summ_m$a.born[6],summ_m$b.mature[6],summ_m$d.observe[6],summ_m$c.teach[6]),
+             radius = 0.4,col=c("royalblue1","skyblue2","orange","darkorange1"),startpos = -2,border=NA)
+floating.pie(summ_m$Category.num[7],summ_m$mean[7],c(summ_m$a.born[7],summ_m$b.mature[7],summ_m$d.observe[7],summ_m$c.teach[7]),
+             radius = 0.4,col=c("royalblue1","skyblue2","orange","darkorange1"),startpos = -2.2,border=NA)
+floating.pie(summ_m$Category.num[8],summ_m$mean[8],c(summ_m$a.born[8],summ_m$b.mature[8],summ_m$d.observe[8],summ_m$c.teach[8]),
+             radius = 0.4,col=c("royalblue1","skyblue2","orange","darkorange1"),startpos = -2.6,border=NA)
+floating.pie(summ_m$Category.num[9],summ_m$mean[9],c(summ_m$a.born[9],summ_m$b.mature[9],summ_m$d.observe[9],summ_m$c.teach[9]),
+             radius = 0.4,col=c("royalblue1","skyblue2","orange","darkorange1"),startpos = 2.2,border=NA)
+floating.pie(summ_m$Category.num[10],summ_m$mean[10],c(summ_m$a.born[10],summ_m$b.mature[10],summ_m$d.observe[10],summ_m$c.teach[10]),
+             radius = 0.4,col=c("royalblue1","skyblue2","orange","darkorange1"),startpos = 2.2,border=NA)
+points(summ_m$Category.num,summ_m$Empirical,pch=3,col="green3",cex=1)
+###box(col="white")
+box()
+par(bg=NA)
+dev.off()
+# ############
+#
+# dev.off()
+```
+
+```{r}
+############### PLOT ##############
+library(plotrix)
+
+y=c(0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5)
+x=c(-0.5:10.5)
+colors1 = c("royalblue1","skyblue2","orange","darkorange1")
+colors2 = c("royalblue3","skyblue4","orange3","darkorange4")
+
+#colors = c("royalblue2","skyblue3","orange2","darkorange2")
+#colors = c("seagreen4","seagreen3","pink2","hotpink")
+startpos = pi+(0.2*2*pi/2)
+y=c(0.41,0.82,1.23,1.64,2.05,2.45,2.86,3.27,3.68,4.09,4.5,5)
+#pdf("JPUS pie.outlined.pdf",width=8,height=8)
+plot(x,y,type = "n",xlab="Category",ylab="Timeline",xlim=c(-0.5,12),ylim=c(-0.5,6),axes=TRUE)
+axis(side=1,at = summ_JP$Category.num,labels = summ_JP$Category)
+axis(side=4)
+#animals
+floating.pie(summ_US$Category.num[1],summ_US$mean[1],c(summ_US$a.born[1],summ_US$b.mature[1],summ_US$d.observe[1],summ_US$c.teach[1]),
+             radius = 0.4,col=colors1,startpos = startpos+0.2,border=NA)
+floating.pie(summ_US$Category.num[2],summ_US$mean[2],c(summ_US$a.born[2],summ_US$b.mature[2],summ_US$d.observe[2],summ_US$c.teach[2]),
+             radius = 0.4,col=colors1,startpos = startpos-0.1,border=NA)
+floating.pie(summ_US$Category.num[3],summ_US$mean[3],c(summ_US$a.born[3],summ_US$b.mature[3],summ_US$d.observe[3],summ_US$c.teach[3]),
+             radius = 0.4,col=colors1,startpos = startpos-1.2,border=NA)
+floating.pie(summ_US$Category.num[4],summ_US$mean[4],c(summ_US$a.born[4],summ_US$b.mature[4],summ_US$d.observe[4],summ_US$c.teach[4]),
+             radius = 0.4,col=colors1,startpos = startpos-1.4,border=NA)
+floating.pie(summ_US$Category.num[5],summ_US$mean[5],c(summ_US$a.born[5],summ_US$b.mature[5],summ_US$d.observe[5],summ_US$c.teach[5]),
+             radius = 0.4,col=colors1,startpos = startpos-0.4,border=NA)
+floating.pie(summ_US$Category.num[6],summ_US$mean[6],c(summ_US$a.born[6],summ_US$b.mature[6],summ_US$d.observe[6],summ_US$c.teach[6]),
+             radius = 0.4,col=colors1,startpos = startpos-1.8,border=NA)
+floating.pie(summ_US$Category.num[7],summ_US$mean[7],c(summ_US$a.born[7],summ_US$b.mature[7],summ_US$d.observe[7],summ_US$c.teach[7]),
+             radius = 0.4,col=colors1,startpos = startpos-1.9,border=NA)
+floating.pie(summ_US$Category.num[8],summ_US$mean[8],c(summ_US$a.born[8],summ_US$b.mature[8],summ_US$d.observe[8],summ_US$c.teach[8]),
+             radius = 0.4,col=colors1,startpos = startpos-pi/2,border=NA)
+floating.pie(summ_US$Category.num[9],summ_US$mean[9],c(summ_US$a.born[9],summ_US$b.mature[9],summ_US$d.observe[9],summ_US$c.teach[9]),
+             radius = 0.4,col=colors1,startpos =startpos-pi/5,border=NA)
+floating.pie(summ_US$Category.num[10],summ_US$mean[10],c(summ_US$a.born[10],summ_US$b.mature[10],summ_US$d.observe[10],summ_US$c.teach[10]),
+             radius = 0.4,col=colors1,startpos = startpos+pi/3,border=NA)
+#points(summ_h$Category.num,summ_h$mean,pch=19,col=alpha("red",0.3),cex=5.6)
+##human
+floating.pie(summ_JP$Category.num[1],summ_JP$mean[1],c(summ_JP$a.born[1],summ_JP$b.mature[1],summ_JP$d.observe[1],summ_JP$c.teach[1]),
+             radius = 0.4,col=colors2,startpos = startpos,border=NA)
+floating.pie(summ_JP$Category.num[2],summ_JP$mean[2],c(summ_JP$a.born[2],summ_JP$b.mature[2],summ_JP$d.observe[2],summ_JP$c.teach[2]),
+             radius = 0.4,col=colors2,startpos = startpos+pi/4,border=NA)
+floating.pie(summ_JP$Category.num[3],summ_JP$mean[3],c(summ_JP$a.born[3],summ_JP$b.mature[3],summ_JP$d.observe[3],summ_JP$c.teach[3]),
+             radius = 0.4,col=colors2,startpos = startpos+0.2,border=NA)
+floating.pie(summ_JP$Category.num[4],summ_JP$mean[4],c(summ_JP$a.born[4],summ_JP$b.mature[4],summ_JP$d.observe[4],summ_JP$c.teach[4]),
+             radius = 0.4,col=colors2,startpos = startpos,border=NA)
+floating.pie(summ_JP$Category.num[5],summ_JP$mean[5],c(summ_JP$a.born[5],summ_JP$b.mature[5],summ_JP$d.observe[5],summ_JP$c.teach[5]),
+             radius = 0.4,col=colors2,startpos = startpos-pi/6,border=NA)
+floating.pie(summ_JP$Category.num[6],summ_JP$mean[6],c(summ_JP$a.born[6],summ_JP$b.mature[6],summ_JP$d.observe[6],summ_JP$c.teach[6]),
+             radius = 0.4,col=colors2,startpos = startpos,border=NA)
+floating.pie(summ_JP$Category.num[7],summ_JP$mean[7],c(summ_JP$a.born[7],summ_JP$b.mature[7],summ_JP$d.observe[7],summ_JP$c.teach[7]),
+             radius = 0.4,col=colors2,startpos = startpos-pi/6,border=NA)
+floating.pie(summ_JP$Category.num[8],summ_JP$mean[8],c(summ_JP$a.born[8],summ_JP$b.mature[8],summ_JP$d.observe[8],summ_JP$c.teach[8]),
+             radius = 0.4,col=colors2,startpos = startpos-pi/6,border=NA)
+floating.pie(summ_JP$Category.num[9],summ_JP$mean[9],c(summ_JP$a.born[9],summ_JP$b.mature[9],summ_JP$d.observe[9],summ_JP$c.teach[9]),
+             radius = 0.4,col=colors2,startpos = startpos,border=NA)
+floating.pie(summ_JP$Category.num[10],summ_JP$mean[10],c(summ_JP$a.born[10],summ_JP$b.mature[10],summ_JP$d.observe[10],summ_JP$c.teach[10]),
+             radius = 0.4,col=colors2,startpos = startpos+pi/3,border=NA)
+par(bg=NA)
+#dev.off()
+
+
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
